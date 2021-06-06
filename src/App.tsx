@@ -1,25 +1,21 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { ThemeProvider } from '@fluentui/react';
+import { ContextProvider } from './context/ContextProvider';
+import { GlobalStyles } from './styles/GlobalStyles';
+import { Routes } from './routes/index';
+import { theme } from './styles/theme';
+import { Drawer } from './drawer';
+import { refPanel } from './utils';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider theme={theme}>
+      <ContextProvider>
+        <GlobalStyles />
+        <Drawer ref={refPanel} />
+        <Routes />
+      </ContextProvider>
+    </ThemeProvider>
   );
 }
 
