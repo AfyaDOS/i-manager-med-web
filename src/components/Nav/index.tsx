@@ -1,6 +1,8 @@
 import * as React from 'react';
 import {
-  Nav as FluentNav, INavStyles, INavLinkGroup,
+  Nav as FluentNav,
+  INavStyles,
+  INavLinkGroup,
 } from '@fluentui/react/lib/Nav';
 
 const navStyles: Partial<INavStyles> = {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Switch } from 'react-router-dom';
-import { HomeScreen, LoginScreen } from '../screens';
+import { ClientsRegisterScreen, HomeScreen, LoginScreen } from '../screens';
 import { AppRoutes } from './app.routes';
 import { AuthRoutes } from './auth.routes';
 
@@ -9,6 +9,9 @@ const Routes: React.FC = () => (
     <Switch>
       <AppRoutes exact path="/">
         <HomeScreen />
+      </AppRoutes>
+      <AppRoutes exact path="/clientsRegister">
+        <ClientsRegisterScreen />
       </AppRoutes>
       <AuthRoutes path="/login">
         <LoginScreen />

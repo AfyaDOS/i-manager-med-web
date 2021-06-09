@@ -20,9 +20,7 @@ const Drawer = forwardRef<IHandlePanel, Props>((props, ref) => {
     setIsOpen((prev) => !prev);
   }
 
-  useImperativeHandle(ref, () => ({
-    open,
-  }));
+  useImperativeHandle(ref, () => ({ open }));
 
   return (
     <Panel

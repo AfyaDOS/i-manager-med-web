@@ -3,9 +3,7 @@ import { Redirect, Route, RouteProps } from 'react-router-dom';
 import { ContextApp } from '../context';
 
 const AppRoutes: React.FC<RouteProps> = ({ children, ...rest }) => {
-  const {
-    user: { isAuthenticated },
-  } = useContext(ContextApp);
+  const { user: { isAuthenticated } } = useContext(ContextApp);
 
   return (
     <Route
