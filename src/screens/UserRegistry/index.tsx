@@ -6,6 +6,7 @@ import {
 import api from '../../services';
 import { Card, CardUser } from './styles';
 import user from '../../assests/images/user.png';
+import { Header } from '../../components/Header';
 
 const UserRegistry: React.FC = () => {
   const [name, setName] = useState<string | undefined>();
@@ -36,9 +37,7 @@ const UserRegistry: React.FC = () => {
 
   return (
     <Card>
-      <header>
-        <h1>header</h1>
-      </header>
+      <Header />
       <CardUser>
         <div className="title">
           <div>

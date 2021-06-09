@@ -11,6 +11,7 @@ import { consultarCep } from 'correios-brasil';
 import api from '../../services';
 import { Card, CardUser } from './styles';
 import specialist from '../../assests/images/specialist.png';
+import { Header } from '../../components/Header';
 
 interface Address {
   postcode: string;
@@ -93,9 +94,7 @@ const SpecialistRegistry: React.FC = () => {
 
   return (
     <Card>
-      <header>
-        <h1>header</h1>
-      </header>
+      <Header />
       <CardUser>
         <div className="title">
           <div>

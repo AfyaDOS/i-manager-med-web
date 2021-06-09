@@ -15,12 +15,6 @@ export const Card = styled.div<Props>`
     rgba(187, 214, 255, 0.08) 35.51%,
     rgba(6, 106, 255, 0.53) 100%
   );
-
-  header {
-    background-color: green;
-    width: 100%;
-    height: 60px;
-  }
 `;
 
 export const CardUser = styled.div<Props>`
