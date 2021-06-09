@@ -31,8 +31,8 @@ const Home: React.FC = () => (
           </PrimaryButton>
         </div>
       </body>
+      <Footer />
     </Card>
-    <Footer />
 
   </div>
 );
