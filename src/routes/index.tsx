@@ -1,6 +1,8 @@
 import React from 'react';
 import { BrowserRouter, Switch } from 'react-router-dom';
-import { ClientsRegisterScreen, HomeScreen, LoginScreen } from '../screens';
+import {
+  HomeScreen, LoginScreen, UserRegistryScreen, SpecialistRegistryScreen, ClientsRegisterScreen,
+} from '../screens';
 import { AppRoutes } from './app.routes';
 import { AuthRoutes } from './auth.routes';
 
@@ -10,8 +12,14 @@ const Routes: React.FC = () => (
       <AppRoutes exact path="/">
         <HomeScreen />
       </AppRoutes>
-      <AppRoutes exact path="/clientsRegister">
+      <AppRoutes exact path="/client/registry">
         <ClientsRegisterScreen />
+      </AppRoutes>
+      <AppRoutes exact path="/user/registry">
+        <UserRegistryScreen />
+      </AppRoutes>
+      <AppRoutes exact path="/specialist/registry">
+        <SpecialistRegistryScreen />
       </AppRoutes>
       <AuthRoutes path="/login">
         <LoginScreen />

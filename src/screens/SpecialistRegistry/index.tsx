@@ -22,7 +22,7 @@ interface Address {
   uf: string;
 }
 const comboBoxStyles: Partial<IComboBoxStyles> = { root: { maxWidth: 800 } };
-const Home: React.FC = () => {
+const SpecialistRegistry: React.FC = () => {
   const [options, setOptions] = useState<IComboBoxOption[]>([]);
   const comboBoxRef = React.useRef<IComboBox>(null);
   const [user, setUser] = useState<string | undefined>();
@@ -54,7 +54,6 @@ const Home: React.FC = () => {
       setCity(response?.localidade);
       setState(response?.uf);
       setDistrict(response?.bairro);
-      console.log(response);
     });
   }, [postcode]);
 
@@ -64,7 +63,7 @@ const Home: React.FC = () => {
     if (value?.selected === true) {
       db.push(value);
     }
-    return console.log(db);
+    console.log(db);
   }
 
   function register() {
@@ -89,7 +88,7 @@ const Home: React.FC = () => {
         },
         { headers },
       )
-      .then((res) => console.log(res.status));
+      .then((res) => res.status);
   }
 
   return (
@@ -210,4 +209,4 @@ const Home: React.FC = () => {
   );
 };
 
-export { Home };
+export { SpecialistRegistry };
