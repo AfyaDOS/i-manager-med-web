@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   TextField,
   ComboBox,
@@ -47,7 +47,7 @@ const SpecialistRegistry: React.FC = () => {
     });
   }, []);
 
-  useEffect(() => {
+  useCallback(() => {
     // @ts-ignore
     consultarCep(postcode).then((response: Address) => {
       setStreet(response?.logradouro);
