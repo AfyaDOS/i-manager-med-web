@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import { Dropdown, IDropdownOption } from '@fluentui/react';
 import { useField } from '@unform/core';
 import React, { useEffect, useRef, useState } from 'react';
@@ -12,7 +13,7 @@ const Select: React.FC<Props> = ({ name, options, label }) => {
   const {
     fieldName, registerField, error, clearError,
   } = useField(name);
-  const refSelect = useRef();
+  const refSelect = useRef<string | undefined>();
   const [defaultValue, setDefaultValue] = useState<string | undefined>();
   const [selectedItem, setSelectedItem] = React.useState<IDropdownOption>();
 
@@ -20,7 +21,7 @@ const Select: React.FC<Props> = ({ name, options, label }) => {
     registerField({
       name: fieldName,
       ref: refSelect,
-      getValue: (ref) => ref.current.key,
+      getValue: (ref) => ref.current,
       setValue: (ref, value: string) => {
         setDefaultValue(value);
       },
@@ -30,20 +31,28 @@ const Select: React.FC<Props> = ({ name, options, label }) => {
     });
   }, [fieldName, registerField, defaultValue]);
 
-  const onChange = (event?: React.FormEvent<HTMLDivElement>, item?: IDropdownOption): void => {
+  const onChange = (
+    event?: React.FormEvent<HTMLDivElement>,
+    item?: IDropdownOption,
+  ): void => {
     setSelectedItem(item);
   };
 
   useEffect(() => {
-
-  }, []);
+    refSelect.current = defaultValue || String(selectedItem?.key);
+  }, [selectedItem, defaultValue]);
 
   return (
     <Dropdown
-      selectedKey={selectedItem ? selectedItem.key : undefined}
+      selectedKey={
+        defaultValue !== undefined && selectedItem === undefined
+          ? defaultValue
+          : selectedItem
+            ? selectedItem.key
+            : undefined
+      }
       onFocus={clearError}
       onChange={onChange}
-      defaultSelectedKey={defaultValue}
       label={label}
       errorMessage={error}
       options={options || []}

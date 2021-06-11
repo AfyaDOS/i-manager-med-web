@@ -4,24 +4,23 @@ import React, { useEffect, useRef, useState } from 'react';
 
 interface Props extends Omit<ITextFieldProps, 'onFocus' | 'onChange' | 'defaultValue' | 'errorMessage' | 'value'> {
   name: string;
-  label?: string;
   mask?: string;
 }
 
 const Input: React.FC<Props> = ({
-  name, label, mask, ...rest
+  name, label, mask, type, ...rest
 }) => {
   const {
     fieldName, defaultValue, registerField, error, clearError,
   } = useField(name);
   const [inputValue, setInputValue] = useState<string | undefined>();
-  const inputRef = useRef<string | undefined>();
+  const inputRef = useRef(null);
 
   useEffect(() => {
     registerField({
       name: fieldName,
       ref: inputRef,
-      getValue: (ref) => ref.current?.replace(/\D/g, ''),
+      getValue: (ref) => (type === 'number' ? ref.current?.replace(/\D/g, '') : ref.current),
       setValue: (ref, text: string | undefined) => {
         setInputValue(text);
       },
@@ -32,7 +31,9 @@ const Input: React.FC<Props> = ({
   }, [inputValue, fieldName, registerField]);
 
   useEffect(() => {
+    // @ts-ignore
     inputRef.current = inputValue;
+    console.log(inputValue, inputRef);
   }, [inputValue]);
 
   function handleChange(text?: string) {
@@ -54,10 +55,11 @@ const Input: React.FC<Props> = ({
       });
 
       const valueMasked = maskedArray.join('');
-      console.log(valueMasked);
       setInputValue(valueMasked);
     } else if (text === '') {
       setInputValue(undefined);
+    } else {
+      setInputValue(text);
     }
   }
 
@@ -65,6 +67,7 @@ const Input: React.FC<Props> = ({
     <TextField
       {...rest}
       label={label}
+      type="text"
       value={inputValue}
       onChange={(_, text) => handleChange(text)}
       onFocus={clearError}

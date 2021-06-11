@@ -18,6 +18,11 @@ import { Row, Column } from './styles';
 import imageHeader from '../../assests/images/patients.png';
 import { states } from '../../utils';
 
+const bloodtype = [{
+  key: 'sdasdasdasd',
+  text: 'A+',
+}];
+
 const ClientsRegister: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
   const [gendersType] = useState<IDropdownOption[]>([
@@ -33,15 +38,16 @@ const ClientsRegister: React.FC = () => {
           .min(11, 'CPF deve conter minimo de 11 digitos.')
           .max(11, 'CPF deve conter maximo de 11 digitos.'),
         name: Yup.string().required('O nome é obrigatório !!'),
-        phone: Yup.string().required('Ao menos um contato é obrigatório !!'),
-        bloodtype: Yup.string().required('Tipo sangu´neo é obrigatório !!'),
-        email: Yup.string().required('O nome é obrigatório !!'),
+        phone: Yup.string(),
+        cellphone: Yup.string().required('Ao menos um contato é obrigatório !!'),
+        bloodtype: Yup.string().required('Tipo sanguíneo é obrigatório !!'),
+        email: Yup.string().required('O email é obrigatório !!'),
         gender: Yup.string().required('O genero é obrigatório'),
         address: Yup.object().shape({
-          city: Yup.string().required('O nome é obrigatório !!'),
-          state: Yup.string().required('O nome é obrigatório !!'),
-          street: Yup.string().required('O nome é obrigatório !!'),
-          district: Yup.string().required('O nome é obrigatório !!'),
+          city: Yup.string().required('Acidade é obrigatório !!'),
+          state: Yup.string().required('O estado é obrigatório !!'),
+          street: Yup.string().required('A rua é obrigatório !!'),
+          district: Yup.string().required('O Bairro é obrigatório !!'),
           numberOf: Yup.string(),
           postcode: Yup.string().required('CEP é obrigatório !!'),
         }),
@@ -73,12 +79,14 @@ const ClientsRegister: React.FC = () => {
     try {
       if (!postcode) return;
 
-      const { data } = await axios.get(`https://viacep.com.br/ws/${postcode}/json/`);
+      const { data } = await axios.get(
+        `https://viacep.com.br/ws/${postcode}/json/`,
+      );
 
-      console.log(data);
+      formRef.current?.clearField('address.state');
 
-      if (data?.error) {
-        throw new Error('CEP invalido.');
+      if (data?.erro) {
+        formRef.current?.setFieldError('address.postcode', 'CEP inválido !!');
       }
 
       formRef.current?.setFieldValue('address.city', data.localidade);
@@ -100,7 +108,7 @@ const ClientsRegister: React.FC = () => {
       >
         <Panel>
           <View>
-            <View style={{ flexDirection: 'row' }}>
+            <View style={{ flexDirection: 'row', marginTop: 20 }}>
               <Image src={imageHeader} width={60} />
               <View style={{ marginLeft: 20 }}>
                 <Text variant="xxLarge">Cadastro de Pacientes</Text>
@@ -113,10 +121,21 @@ const ClientsRegister: React.FC = () => {
           </View>
           <Row>
             <Column>
-              <Input label="CPF:" name="cpf" mask="$$$.$$$.$$$-$$" />
+              <Input
+                label="CPF:"
+                name="cpf"
+                type="number"
+                mask="$$$.$$$.$$$-$$"
+              />
               <Input label="Nome completo:" name="name" />
               <Scope path="address">
-                <Input onBlur={handleSearch} label="CEP:" name="postcode" mask="$$.$$$-$$$" />
+                <Input
+                  onBlur={handleSearch}
+                  label="CEP:"
+                  type="number"
+                  name="postcode"
+                  mask="$$.$$$-$$$"
+                />
                 <Stack horizontal tokens={{ childrenGap: 10 }}>
                   <Stack.Item grow={10}>
                     <Input label="Rua:" name="street" />
@@ -137,10 +156,20 @@ const ClientsRegister: React.FC = () => {
               </Scope>
             </Column>
             <Column>
-              <Input label="Telefone:" name="phone" />
-              <Input label="Celular:" name="phone" />
+              <Input
+                label="Telefone:"
+                type="number"
+                name="phone"
+                mask="($$) $$$$-$$$$"
+              />
+              <Input
+                label="Celular:"
+                type="number"
+                name="cellphone"
+                mask="($$) $.$$$$-$$$$"
+              />
               <Input label="Email:" name="email" />
-              <Select options={[]} name="bloodtype" label="Tipo Sanguíneo:" />
+              <Select options={bloodtype} name="bloodtype" label="Tipo Sanguíneo:" />
               <Select options={gendersType} name="gender" label="Sexo:" />
               <PrimaryButton style={{ marginTop: 30 }} type="submit">
                 enviar

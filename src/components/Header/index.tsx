@@ -6,9 +6,7 @@ import logo from '../../assests/images/logo.png';
 const Header: React.FC = () => (
   <CardHeader>
     <img src={logo} alt="logo" />
-    <PrimaryButton className="button">
-      Entrar
-    </PrimaryButton>
+    {true && <PrimaryButton className="button">Entrar</PrimaryButton>}
   </CardHeader>
 );
 
