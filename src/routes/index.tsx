@@ -12,9 +12,6 @@ const Routes: React.FC = () => (
   <BrowserRouter>
     <Switch>
       {/* <Drawer ref={refPanel} /> */}
-      <PrivateRoutes exact path="/">
-        <HomeScreen />
-      </PrivateRoutes>
       <PrivateRoutes exact path="/client/registry">
         <ClientsRegisterScreen />
       </PrivateRoutes>
@@ -24,7 +21,10 @@ const Routes: React.FC = () => (
       <PrivateRoutes exact path="/specialist/registry">
         <SpecialistRegistryScreen />
       </PrivateRoutes>
-      <AuthRoutes path="/login">
+      <AuthRoutes path="/" exact>
+        <HomeScreen />
+      </AuthRoutes>
+      <AuthRoutes path="/login" exact>
         <LoginScreen />
       </AuthRoutes>
       <Route path="*">

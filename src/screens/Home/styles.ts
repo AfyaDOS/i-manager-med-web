@@ -1,9 +1,10 @@
-import { Theme } from '@fluentui/react';
 import styled from 'styled-components';
+import { makeStyles, Theme } from '@fluentui/react';
 
 interface Props {
   theme: Theme;
 }
+export default makeStyles({ containerForm: { height: '100%' } });
 
 export const Card = styled.div<Props>`
   display: flex;
