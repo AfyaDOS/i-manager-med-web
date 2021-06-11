@@ -1,29 +1,35 @@
 import React from 'react';
-import { BrowserRouter, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+// import { Drawer } from '../drawer';
 import {
   HomeScreen, LoginScreen, UserRegistryScreen, SpecialistRegistryScreen, ClientsRegisterScreen,
 } from '../screens';
-import { AppRoutes } from './app.routes';
+// import { refPanel } from '../utils';
+import { PrivateRoutes } from './app.routes';
 import { AuthRoutes } from './auth.routes';
 
 const Routes: React.FC = () => (
   <BrowserRouter>
     <Switch>
-      <AppRoutes exact path="/">
+      {/* <Drawer ref={refPanel} /> */}
+      <PrivateRoutes exact path="/">
         <HomeScreen />
-      </AppRoutes>
-      <AppRoutes exact path="/client/registry">
+      </PrivateRoutes>
+      <PrivateRoutes exact path="/client/registry">
         <ClientsRegisterScreen />
-      </AppRoutes>
-      <AppRoutes exact path="/user/registry">
+      </PrivateRoutes>
+      <PrivateRoutes exact path="/user/registry">
         <UserRegistryScreen />
-      </AppRoutes>
-      <AppRoutes exact path="/specialist/registry">
+      </PrivateRoutes>
+      <PrivateRoutes exact path="/specialist/registry">
         <SpecialistRegistryScreen />
-      </AppRoutes>
+      </PrivateRoutes>
       <AuthRoutes path="/login">
         <LoginScreen />
       </AuthRoutes>
+      <Route path="*">
+        <div>Page Not Faound</div>
+      </Route>
     </Switch>
   </BrowserRouter>
 );

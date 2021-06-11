@@ -1,9 +1,10 @@
-import * as React from 'react';
+import React, { useEffect } from 'react';
 import {
   Nav as FluentNav,
   INavStyles,
   INavLinkGroup,
 } from '@fluentui/react/lib/Nav';
+import { useHistory } from 'react-router-dom';
 
 const navStyles: Partial<INavStyles> = {
   root: {
@@ -76,13 +77,20 @@ const navLinkGroups: INavLinkGroup[] = [
   },
 ];
 
-const Nav: React.FC = () => (
-  <FluentNav
-    selectedKey="key3"
-    ariaLabel="Nav basic example"
-    styles={navStyles}
-    groups={navLinkGroups}
-  />
-);
+const Nav: React.FC = () => {
+  const history = useHistory();
+
+  useEffect(() => {
+    console.log(history.location);
+  }, []);
+  return (
+    <FluentNav
+      selectedKey="key1"
+      ariaLabel="Nav basic example"
+      styles={navStyles}
+      groups={navLinkGroups}
+    />
+  );
+};
 
 export { Nav };
