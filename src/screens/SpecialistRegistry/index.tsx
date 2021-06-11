@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   TextField,
   ComboBox,
@@ -48,7 +48,7 @@ const SpecialistRegistry: React.FC = () => {
     });
   }, []);
 
-  useCallback(() => {
+  useEffect(() => {
     // @ts-ignore
     consultarCep(postcode).then((response: Address) => {
       setStreet(response?.logradouro);
@@ -64,7 +64,6 @@ const SpecialistRegistry: React.FC = () => {
     if (value?.selected === true) {
       db.push(value);
     }
-    console.log(db);
   }
 
   function register() {

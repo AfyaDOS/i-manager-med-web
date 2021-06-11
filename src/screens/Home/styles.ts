@@ -55,8 +55,8 @@ export const Card = styled.div<Props>`
       p{
         font-style: normal;
         font-weight: 800;
-        font-size: 44px;
-        line-height: 48px;
+        font-size: 42px;
+        line-height: 44px;
         display: flex;
         align-items: center;
         text-align: center;

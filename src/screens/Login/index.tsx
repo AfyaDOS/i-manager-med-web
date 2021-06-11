@@ -3,7 +3,11 @@ import { useHistory } from 'react-router-dom';
 import { PrimaryButton, TextField, useTheme } from '@fluentui/react';
 import { ContextApp } from '../../context';
 import { Card } from './styles';
-import { open } from '../../utils';
+import { Header } from '../../components/Header';
+import { Footer } from '../../components/Footer';
+import logo from '../../assests/images/logo.png';
+import logoAfyados from '../../assests/images/logosAfyados.png';
+import doctor from '../../assests/images/doctor.png';
 
 const Login: React.FC = () => {
   const { login } = useContext(ContextApp);
@@ -21,18 +25,22 @@ const Login: React.FC = () => {
   return (
     <div>
       <Card theme={theme}>
-        <h1>Clientes</h1>
-        <p>Nome:</p>
-      </Card>
-      <TextField onChange={(_, text) => setUser(text)} label="UserName" />
-      <TextField onChange={(_, text) => setPassword(text)} label="PassWord" type="password" />
-      <PrimaryButton onClick={userLogin}>
-        LOGIN
-      </PrimaryButton>
+        <Header />
 
-      <PrimaryButton onClick={open}>
-        LOGIN
-      </PrimaryButton>
+        <body>
+          <img src={doctor} alt="dro" />
+          <div className="cardLogin">
+            <img src={logo} alt="logo" className="logoMed" />
+            <TextField onChange={(_, text) => setUser(text)} label="Usuário:" />
+            <TextField onChange={(_, text) => setPassword(text)} label="Senha:" type="password" />
+            <PrimaryButton onClick={userLogin}>
+              Entrar
+            </PrimaryButton>
+            <img src={logoAfyados} alt="logo" className="logoAfyados" />
+          </div>
+        </body>
+        <Footer />
+      </Card>
     </div>
   );
 };
