@@ -1,210 +1,176 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useContext,
+} from 'react';
 import {
-  TextField,
   ComboBox,
   IComboBox,
   IComboBoxOption,
   IComboBoxStyles,
   PrimaryButton,
+  Stack,
+  Image,
+  Text,
 } from '@fluentui/react';
-import { consultarCep } from 'correios-brasil';
+import * as Yup from 'yup';
+import { Form } from '@unform/web';
+import { FormHandles, Scope } from '@unform/core';
+import axios from 'axios';
+import { ContextApp } from '../../context';
 import api from '../../services';
-import { Card, CardUser } from './styles';
+import { Input } from '../../components';
 import specialist from '../../assests/images/specialist.png';
 import { Header } from '../../components/Header';
+import { Footer } from '../../components/Footer';
+import {
+  Row,
+  Column,
+} from './styles';
+import { Container, Panel, View } from '../../styles';
 
-interface Address {
-  postcode: string;
-  logradouro: string;
-  complemento: string;
-  bairro: string;
-  localidade: string;
-  siafi: string;
-  uf: string;
-}
 const comboBoxStyles: Partial<IComboBoxStyles> = { root: { maxWidth: 800 } };
+
 const SpecialistRegistry: React.FC = () => {
+  const { user } = useContext(ContextApp);
+  const formRef = useRef<FormHandles>(null);
   const [options, setOptions] = useState<IComboBoxOption[]>([]);
   const comboBoxRef = React.useRef<IComboBox>(null);
-  const [user, setUser] = useState<string | undefined>();
-  const [email, setEmail] = useState<string | undefined>();
-  const [postcode, setPostcode] = useState<string | undefined>();
-  const [street, setStreet] = useState<string | undefined>();
-  const [state, setState] = useState<string | undefined>();
-  const [district, setDistrict] = useState<string | undefined>();
-  const [city, setCity] = useState<string | undefined>();
-  const [numberOf, setNumberOf] = useState<string | undefined>();
-  const [registry, setRegistry] = useState<string | undefined>();
-  const [cell, setCell] = useState<string | undefined>();
-  const [phone, setPhone] = useState<string | undefined>();
   const headers = {
     Authorization:
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImM0ZDIzZjhjLTczZjUtNDhiZC04NjliLWM5YmQ4M2Y4MGE0MSIsIm5hbWUiOiJtYXJjZWxvIiwiaWF0IjoxNjIzMTIwODUxLCJleHAiOjE2MjMyMDcyNTF9.UwFxvXyJtevb9csR14zSRhuIfI2mo5ScY5AsmqmNMuU',
+      ',eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijc2Y2FlNTJkLTkzNGMtNDk5MS05NDU3LTk3Njg4ZTg3YWI0YiIsIm5hbWUiOiJtYXJjZWxvIiwiaWF0IjoxNjIzMzM3NjYzLCJleHAiOjE2MjM0MjQwNjN9.NwVN8igJcuVptJxCqCd-Pyof7hhzk85hkRQxkImmswA',
   };
 
+  console.log(user);
   useEffect(() => {
     api.get('/specialties', { headers }).then((res) => {
       setOptions(res.data);
     });
   }, []);
-
-  useCallback(() => {
-    // @ts-ignore
-    consultarCep(postcode).then((response: Address) => {
-      setStreet(response?.logradouro);
-      setCity(response?.localidade);
-      setState(response?.uf);
-      setDistrict(response?.bairro);
-    });
-  }, [postcode]);
-
   // @ts-ignore
-  const db: any[] = [];
+  const getSpecialist: any[] = [];
   function specialties(value: any) {
     if (value?.selected === true) {
-      db.push(value);
+      getSpecialist.push(value);
     }
-    console.log(db);
+    console.log(getSpecialist);
   }
 
-  function register() {
-    api
-      .post(
-        '/specialist',
-        {
-          name: user,
-          email,
-          registry,
-          phone,
-          cell,
-          specialties: db,
-          address: {
-            city,
-            state,
-            street,
-            district,
-            numberOf,
-            postcode,
-          },
-        },
-        { headers },
-      )
-      .then((res) => res.status);
+  const handleSubmit = useCallback(async (data: any) => {
+    try {
+      const schema = Yup.object().shape({
+        name: Yup.string().required('O Nome é obrigatório !!'),
+        phone: Yup.number().required('Ao menos um contato é obrigatório !!'),
+        registry: Yup.number().required('O Registro é obrigatório !!'),
+        specialties: Yup.array().min(1).required('Você deve incluir ao menos 1 especialidade!!'),
+        email: Yup.string().required('O Email é obrigatório !!'),
+        address: Yup.object().shape({
+          city: Yup.string().required('A Cidade é obrigatória !!'),
+          state: Yup.string().required('O Estado é obrigatório !!'),
+          street: Yup.string().required('O Endereço é obrigatório !!'),
+          district: Yup.string().required('O Bairro é obrigatório !!'),
+          numberOf: Yup.number(),
+          postcode: Yup.number().required('O CEP é obrigatório !!'),
+        }),
+      });
+      await schema.validate(data, { abortEarly: false });
+    } catch (err) {
+      const validationErrors = {};
+      if (err instanceof Yup.ValidationError) {
+        err.inner.forEach((error) => {
+          if (typeof error.path === 'string') {
+            Object.assign(validationErrors, { [error.path]: error.message });
+          }
+        });
+        if (typeof formRef?.current?.setErrors === 'function') {
+          formRef.current.setErrors(validationErrors);
+        }
+      }
+    }
+  }, []);
+  async function handleSearch() {
+    const postcode = formRef.current?.getFieldValue('address.postcode');
+    try {
+      if (!postcode) return;
+      const { data } = await axios.get(`https://viacep.com.br/ws/${postcode}/json/`);
+      formRef.current?.setFieldValue('address.city', data.localidade);
+      formRef.current?.setFieldValue('address.street', data.logradouro);
+      formRef.current?.setFieldValue('address.district', data.bairro);
+      formRef.current?.setFieldValue('address.state', data.uf.toUpperCase());
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
-    <Card>
+    <Container>
       <Header />
-      <CardUser>
-        <div className="title">
-          <div>
-            <img src={specialist} alt="logo especialista" className="logo" />
-          </div>
-          <div className="textCardHeader">
-            <h1>Cadastro de Especialista</h1>
-            <p>
-              Para cadastrar, preencha os campos abaixo com os dados do
-              especialista.
-            </p>
-          </div>
-        </div>
+      <Form ref={formRef} onSubmit={handleSubmit} style={{ height: 'calc(100vh - 100px)' }}>
+        <Panel>
+          <View>
+            <View style={{ flexDirection: 'row' }}>
+              <Image src={specialist} width={60} />
+              <View style={{ marginLeft: 20 }}>
+                <Text variant="xxLarge">Cadastro de Especialista</Text>
+                <Text>
+                  Para cadastrar, preencha os campos abaixo com os dados do
+                  especialista.
+                </Text>
+              </View>
+            </View>
+          </View>
+          <Row>
+            <Column style={{ justifyContent: 'flex-start' }}>
+              <Input label="Nome completo:" name="name" />
+              <Input label="Email:" name="email" />
+              <Scope path="address">
+                <Input onBlur={handleSearch} label="CEP:" name="postcode" mask="$$.$$$-$$$" />
+                <Input label="Endereço:" name="street" />
+                <Stack horizontal tokens={{ childrenGap: 20, padding: 0 }}>
+                  <Stack.Item grow={10}>
+                    <Input label="Cidade:" name="city" />
+                  </Stack.Item>
+                  <Stack.Item grow={2}>
+                    <Input label="Estado:" name="state" />
+                  </Stack.Item>
+                </Stack>
+                <Stack horizontal tokens={{ childrenGap: 20, padding: 0 }}>
+                  <Stack.Item grow={10}>
+                    <Input label="Bairro:" name="district" />
+                  </Stack.Item>
+                  <Stack.Item grow={2}>
+                    <Input label="Número:" name="numberOf" />
+                  </Stack.Item>
+                </Stack>
+              </Scope>
+            </Column>
+            <Column style={{ justifyContent: 'flex-start' }}>
+              <Stack>
+                <Input label="Registro:" name="registry" />
+                <Input label="Telefone:" name="phone" />
+                <Input label="Celular:" name="phone" />
+                <ComboBox
+                  componentRef={comboBoxRef}
+                  defaultSelectedKey="C"
+                  label="Especialidades"
+                  options={options}
+                  styles={comboBoxStyles}
+                  multiSelect
+                  onChange={(i, value) => specialties(value)}
+                />
+                <PrimaryButton type="submit" style={{ marginTop: 29.04 }}>
+                  Cadastrar
+                </PrimaryButton>
+              </Stack>
+            </Column>
+          </Row>
+        </Panel>
+      </Form>
+      <Footer />
+    </Container>
 
-        <div className="textColumn">
-          <TextField
-            onChange={(i, text) => setUser(text)}
-            label="Name"
-            placeholder="Ex: Marcelo"
-            value={user}
-          />
-
-          <TextField
-            onChange={(i, text) => setEmail(text)}
-            label="E-mail"
-            placeholder="Ex: marcelo@email.com"
-            value={email}
-          />
-
-          <TextField
-            onChange={(i, text) => setPostcode(text)}
-            label="CEP"
-            placeholder="Ex: 55555-555"
-          />
-          <TextField
-            onChange={(i, text) => setStreet(text)}
-            label="Endereço"
-            placeholder="Ex: Rua Dr A"
-            value={street}
-          />
-          <div className="city">
-            <TextField
-              onChange={(i, text) => setCity(text)}
-              label="Cidade"
-              placeholder="Ex: São Paulo"
-              className="inputOne"
-              value={city}
-            />
-            <TextField
-              onChange={(i, text) => setState(text)}
-              label="Estado"
-              placeholder="Ex: SP"
-              value={state}
-            />
-          </div>
-          <div className="city">
-            <TextField
-              onChange={(i, text) => setDistrict(text)}
-              label="Bairro"
-              placeholder="Ex: Butantã"
-              className="inputOne"
-              value={district}
-            />
-            <TextField
-              onChange={(i, text) => setNumberOf(text)}
-              label="Número"
-              placeholder="Ex: 80"
-              value={numberOf}
-            />
-          </div>
-        </div>
-
-        <div className="separator" />
-
-        <div className="textColumn">
-          <TextField
-            onChange={(i, text) => setPhone(text)}
-            label="Telefone"
-            placeholder="Ex: (88) 8888-8888 "
-            value={phone}
-          />
-          <TextField
-            onChange={(i, text) => setCell(text)}
-            label="Celular"
-            placeholder="Ex: (88) 88888-8888 "
-            value={cell}
-          />
-          <TextField
-            onChange={(i, text) => setRegistry(text)}
-            label="Registro"
-            placeholder="Ex: 8888888-88"
-            value={registry}
-          />
-          <ComboBox
-            componentRef={comboBoxRef}
-            defaultSelectedKey="C"
-            label="Especialidades"
-            options={options}
-            styles={comboBoxStyles}
-            multiSelect
-            // @ts-ignore
-            onChange={(i, value) => specialties(value)}
-          />
-
-          <PrimaryButton className="button" onClick={register}>
-            Cadastrar
-          </PrimaryButton>
-        </div>
-      </CardUser>
-    </Card>
   );
 };
 

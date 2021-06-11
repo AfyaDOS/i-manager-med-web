@@ -76,5 +76,4 @@ const Input: React.FC<Props> = ({
     />
   );
 };
-
 export { Input };

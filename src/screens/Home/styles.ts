@@ -1,9 +1,10 @@
-import { Theme } from '@fluentui/react';
 import styled from 'styled-components';
+import { makeStyles, Theme } from '@fluentui/react';
 
 interface Props {
   theme: Theme;
 }
+export default makeStyles({ containerForm: { height: '100%' } });
 
 export const Card = styled.div<Props>`
   display: flex;
@@ -55,8 +56,8 @@ export const Card = styled.div<Props>`
       p{
         font-style: normal;
         font-weight: 800;
-        font-size: 44px;
-        line-height: 48px;
+        font-size: 42px;
+        line-height: 44px;
         display: flex;
         align-items: center;
         text-align: center;
