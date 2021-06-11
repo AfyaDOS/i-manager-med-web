@@ -3,6 +3,7 @@ import React, {
   useEffect,
   useRef,
   useCallback,
+  useContext,
 } from 'react';
 import {
   ComboBox,
@@ -18,6 +19,7 @@ import * as Yup from 'yup';
 import { Form } from '@unform/web';
 import { FormHandles, Scope } from '@unform/core';
 import axios from 'axios';
+import { ContextApp } from '../../context';
 import api from '../../services';
 import { Input } from '../../components';
 import specialist from '../../assests/images/specialist.png';
@@ -30,7 +32,9 @@ import {
 import { Container, Panel, View } from '../../styles';
 
 const comboBoxStyles: Partial<IComboBoxStyles> = { root: { maxWidth: 800 } };
+
 const SpecialistRegistry: React.FC = () => {
+  const { user } = useContext(ContextApp);
   const formRef = useRef<FormHandles>(null);
   const [options, setOptions] = useState<IComboBoxOption[]>([]);
   const comboBoxRef = React.useRef<IComboBox>(null);
@@ -38,6 +42,8 @@ const SpecialistRegistry: React.FC = () => {
     Authorization:
       ',eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijc2Y2FlNTJkLTkzNGMtNDk5MS05NDU3LTk3Njg4ZTg3YWI0YiIsIm5hbWUiOiJtYXJjZWxvIiwiaWF0IjoxNjIzMzM3NjYzLCJleHAiOjE2MjM0MjQwNjN9.NwVN8igJcuVptJxCqCd-Pyof7hhzk85hkRQxkImmswA',
   };
+
+  console.log(user);
   useEffect(() => {
     api.get('/specialties', { headers }).then((res) => {
       setOptions(res.data);

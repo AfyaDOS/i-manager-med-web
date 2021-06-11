@@ -31,10 +31,11 @@ const Login: React.FC = () => {
 
   function userLogin() {
     login({ email, password }).then((resp) => {
-      if (resp === true) {
+      if (resp) {
         history.push('/client/registry');
       }
       notify();
+      return resp;
     });
   }
 

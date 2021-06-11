@@ -2,7 +2,12 @@ import React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 // import { Drawer } from '../drawer';
 import {
-  HomeScreen, LoginScreen, UserRegistryScreen, SpecialistRegistryScreen, ClientsRegisterScreen,
+  HomeScreen,
+  LoginScreen,
+  UserRegistryScreen,
+  SpecialistRegistryScreen,
+  ClientsRegisterScreen,
+  SpecialistScreen,
 } from '../screens';
 // import { refPanel } from '../utils';
 import { PrivateRoutes } from './app.routes';
@@ -17,6 +22,9 @@ const Routes: React.FC = () => (
       </PrivateRoutes>
       <PrivateRoutes exact path="/user/registry">
         <UserRegistryScreen />
+      </PrivateRoutes>
+      <PrivateRoutes exact path="/specialist">
+        <SpecialistScreen />
       </PrivateRoutes>
       <PrivateRoutes exact path="/specialist/registry">
         <SpecialistRegistryScreen />

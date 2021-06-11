@@ -3,7 +3,7 @@ import { ContextApp } from '.';
 import api from '../services';
 
 const ContextProvider: React.FC = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
 
   const login = useCallback(async ({ email, password }) => {
     try {
