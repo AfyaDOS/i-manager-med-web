@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { Redirect, Route, RouteProps } from 'react-router-dom';
 import { ContextApp } from '../context';
 
-const AppRoutes: React.FC<RouteProps> = ({ children, ...rest }) => {
+const PrivateRoutes: React.FC<RouteProps> = ({ children, ...rest }) => {
   const { user: { isAuthenticated } } = useContext(ContextApp);
 
   return (
@@ -22,4 +22,4 @@ const AppRoutes: React.FC<RouteProps> = ({ children, ...rest }) => {
   );
 };
 
-export { AppRoutes };
+export { PrivateRoutes };
