@@ -117,3 +117,16 @@ export const states = [
     text: 'Distrito Federal',
   },
 ];
+
+export function setData(ref: any, data: any) {
+  if (data && ref.current) {
+    Object.entries(data).forEach(([key, value]) => {
+      if (typeof value === 'object' && value !== null) {
+        Object.entries(value).forEach(([subKey, subValue]) => {
+          ref.current?.setFieldValue(`${key}.${subKey}`, subValue);
+        });
+      }
+      ref.current?.setFieldValue(key, value);
+    });
+  }
+}

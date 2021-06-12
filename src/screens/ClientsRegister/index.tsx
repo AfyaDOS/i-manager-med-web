@@ -1,4 +1,6 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, {
+  useCallback, useEffect, useRef, useState,
+} from 'react';
 import { Form } from '@unform/web';
 import { FormHandles, Scope } from '@unform/core';
 import * as Yup from 'yup';
@@ -10,6 +12,7 @@ import {
   Text,
 } from '@fluentui/react';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 import { Input, Select } from '../../components';
 import { Header } from '../../components/Header';
 import { Footer } from '../../components/Footer';
@@ -30,6 +33,32 @@ const ClientsRegister: React.FC = () => {
     { key: '1', text: 'Feminino' },
     { key: '2', text: 'Outros' },
   ]);
+
+  useEffect(() => {
+    if (formRef.current) {
+      const data = {
+        cpf: '11111111111',
+        name: 'leonardo',
+        phone: '1111111111',
+        cellphone: '11111111111',
+        email: 'teste@teste.com',
+        bloodtype: 'sdasdasdasd',
+        gender: '0',
+        address: {
+          postcode: '17512270', street: 'Rua Bento de Abreu Filho', numberOf: '2221', city: 'Marília', state: 'sp', district: 'Jardim Santa Antonieta',
+        },
+      };
+
+      Object.entries(data).forEach(([key, value]) => {
+        if (typeof value === 'object') {
+          Object.entries(value).forEach(([subKey, subValue]) => {
+            formRef.current?.setFieldValue(`${key}.${subKey}`, subValue);
+          });
+        }
+        formRef.current?.setFieldValue(key, value);
+      });
+    }
+  }, []);
 
   const handleSubmit = useCallback(async (data: any) => {
     try {
@@ -55,7 +84,7 @@ const ClientsRegister: React.FC = () => {
 
       await schema.validate(data, { abortEarly: false });
 
-      console.log(data);
+      console.log(JSON.stringify(data));
     } catch (err) {
       const validationErrors = {};
       if (err instanceof Yup.ValidationError) {
@@ -94,7 +123,7 @@ const ClientsRegister: React.FC = () => {
       formRef.current?.setFieldValue('address.district', data.bairro);
       formRef.current?.setFieldValue('address.state', data.uf.toLowerCase());
     } catch (error) {
-      console.log(error);
+      toast.error('Falha ao obter o cep');
     }
   }
 
@@ -172,6 +201,10 @@ const ClientsRegister: React.FC = () => {
               <Select options={bloodtype} name="bloodtype" label="Tipo Sanguíneo:" />
               <Select options={gendersType} name="gender" label="Sexo:" />
               <PrimaryButton style={{ marginTop: 30 }} type="submit">
+                enviar
+              </PrimaryButton>
+
+              <PrimaryButton style={{ marginTop: 30 }} type="button" onClick={() => formRef.current?.reset()}>
                 enviar
               </PrimaryButton>
             </Column>

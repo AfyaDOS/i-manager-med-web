@@ -3,12 +3,13 @@ import {
   TextField,
   PrimaryButton,
 } from '@fluentui/react';
-import api from '../../services';
+import { useApi } from '../../services';
 import { Card, CardUser } from './styles';
 import user from '../../assests/images/user.png';
 import { Header } from '../../components/Header';
 
 const UserRegistry: React.FC = () => {
+  const api = useApi();
   const [name, setName] = useState<string | undefined>();
   const [email, setEmail] = useState<string | undefined>();
   const [password, setPassword] = useState<string | undefined>();

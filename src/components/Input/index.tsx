@@ -33,7 +33,6 @@ const Input: React.FC<Props> = ({
   useEffect(() => {
     // @ts-ignore
     inputRef.current = inputValue;
-    console.log(inputValue, inputRef);
   }, [inputValue]);
 
   function handleChange(text?: string) {

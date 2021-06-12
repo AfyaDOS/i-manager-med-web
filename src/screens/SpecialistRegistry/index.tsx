@@ -19,33 +19,41 @@ import * as Yup from 'yup';
 import { Form } from '@unform/web';
 import { FormHandles, Scope } from '@unform/core';
 import axios from 'axios';
+import { useLocation } from 'react-router-dom';
 import { ContextApp } from '../../context';
-import api from '../../services';
+import { useApi } from '../../services';
 import { Input } from '../../components';
 import specialist from '../../assests/images/specialist.png';
 import { Header } from '../../components/Header';
 import { Footer } from '../../components/Footer';
+import { ISpecialist } from '../../commonTypes';
 import {
   Row,
   Column,
 } from './styles';
 import { Container, Panel, View } from '../../styles';
+import { setData } from '../../utils';
+
+interface ILocation{
+  item?: ISpecialist
+}
 
 const comboBoxStyles: Partial<IComboBoxStyles> = { root: { maxWidth: 800 } };
 
 const SpecialistRegistry: React.FC = () => {
+  const { state } = useLocation<ILocation>();
   const { user } = useContext(ContextApp);
+  const api = useApi();
   const formRef = useRef<FormHandles>(null);
   const [options, setOptions] = useState<IComboBoxOption[]>([]);
   const comboBoxRef = React.useRef<IComboBox>(null);
-  const headers = {
-    Authorization:
-      ',eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijc2Y2FlNTJkLTkzNGMtNDk5MS05NDU3LTk3Njg4ZTg3YWI0YiIsIm5hbWUiOiJtYXJjZWxvIiwiaWF0IjoxNjIzMzM3NjYzLCJleHAiOjE2MjM0MjQwNjN9.NwVN8igJcuVptJxCqCd-Pyof7hhzk85hkRQxkImmswA',
-  };
 
-  console.log(user);
   useEffect(() => {
-    api.get('/specialties', { headers }).then((res) => {
+    setData(formRef, state?.item);
+  }, [state?.item]);
+
+  useEffect(() => {
+    api.get('/specialties').then((res) => {
       setOptions(res.data);
     });
   }, []);

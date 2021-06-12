@@ -10,6 +10,7 @@ interface IContext {
   login: (data: IData) => Promise<boolean>;
   user: {
     isAuthenticated: boolean;
+    token?: string;
   };
 }
 
