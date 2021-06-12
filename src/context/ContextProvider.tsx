@@ -2,24 +2,35 @@ import React, { useCallback, useState } from 'react';
 import { ContextApp } from '.';
 import { useApi } from '../services';
 
+interface IUser{
+  name: string;
+  id: string;
+}
+
 const ContextProvider: React.FC = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState<IUser>();
+  const [token, setToken] = useState<string | undefined>();
   const api = useApi();
 
   const login = useCallback(async ({ email, password }) => {
     try {
-      await api.post('/login', { email, password });
+      const { data } = await api.post('/login', { email, password });
 
-      setIsAuthenticated(true);
+      if (data) {
+        setToken(data.token);
+        setUser({ name: data.name, id: data.id });
+        setIsAuthenticated(true);
+      }
 
       return true;
     } catch (error) {
-      return false;
+      throw new Error(error.response.data.message);
     }
   }, []);
 
   return (
-    <ContextApp.Provider value={{ user: { isAuthenticated }, login }}>
+    <ContextApp.Provider value={{ user: { ...user, isAuthenticated, token }, login }}>
       {children}
     </ContextApp.Provider>
   );

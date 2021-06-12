@@ -1,10 +1,11 @@
 /* eslint-disable no-unused-vars */
 import React, { createRef } from 'react';
+import * as Yup from 'yup';
 import { IHandlePanel } from '../drawer';
 
 export const refPanel = createRef<IHandlePanel>();
 
-export function open() {
+export function open(): void {
   refPanel.current?.open();
 }
 
@@ -119,7 +120,7 @@ export const states = [
   },
 ];
 
-export function setData(ref: any, data: any) {
+export function setData(ref: any, data: any): void {
   if (data && ref.current) {
     Object.entries(data).forEach(([key, value]) => {
       if (typeof value === 'object' && value !== null) {
@@ -141,3 +142,17 @@ export const makeStyles = {
     return styles as T;
   },
 };
+
+export function setErrors(ref: any, err: any): void {
+  const validationErrors = {};
+  if (err instanceof Yup.ValidationError) {
+    err.inner.forEach((error: any) => {
+      if (typeof error.path === 'string') {
+        Object.assign(validationErrors, { [error.path]: error.message });
+      }
+    });
+    if (typeof ref?.current?.setErrors === 'function') {
+      ref.current.setErrors(validationErrors);
+    }
+  }
+}

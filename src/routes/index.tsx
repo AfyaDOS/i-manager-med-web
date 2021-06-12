@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-// import { Drawer } from '../drawer';
+import { Drawer } from '../drawer';
 import {
   HomeScreen,
   LoginScreen,
@@ -11,15 +11,20 @@ import {
   SpecialistScreen,
   MedRecordCreateScreen,
   MedRecordHistoryScreen,
+  NotFoundScreen,
+  ClientScreen,
 } from '../screens';
-// import { refPanel } from '../utils';
+import { refPanel } from '../utils';
 import { PrivateRoutes } from './app.routes';
 import { AuthRoutes } from './auth.routes';
 
 const Routes: React.FC = () => (
   <BrowserRouter>
+    <Drawer ref={refPanel} />
     <Switch>
-      {/* <Drawer ref={refPanel} /> */}
+      <PrivateRoutes exact path="/client">
+        <ClientScreen />
+      </PrivateRoutes>
       <PrivateRoutes exact path="/client/registry">
         <ClientsRegisterScreen />
       </PrivateRoutes>
@@ -48,7 +53,7 @@ const Routes: React.FC = () => (
         <LoginScreen />
       </AuthRoutes>
       <Route path="*">
-        <div>Page Not Faound</div>
+        <NotFoundScreen />
       </Route>
     </Switch>
   </BrowserRouter>

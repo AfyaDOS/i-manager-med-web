@@ -1,6 +1,10 @@
-/* eslint-disable no-unused-vars */
 import {
-  Check, mergeStyleSets, Separator, Spinner, Stack, Text,
+  Check,
+  mergeStyleSets,
+  Separator,
+  Spinner,
+  Stack,
+  Text,
 } from '@fluentui/react';
 import React, { useEffect, useState } from 'react';
 import { View } from '../../styles';
@@ -22,7 +26,7 @@ interface Props {
   columns: IColumns[];
   data?: any;
   clear?: boolean;
-  setSelection: (id:string) => void;
+  setSelection: (id: string) => void;
 }
 
 const FlatList: React.FC<Props> = ({
@@ -74,8 +78,8 @@ const FlatList: React.FC<Props> = ({
         </Stack>
         <Separator />
         <Stack className={mergedStyles.root}>
-          {data
-            ? data.map((item: any) => (
+          {data ? (
+            data.map((item: any) => (
               <Stack
                 key={item.id}
                 onClick={() => handleSelect(item.id)}
@@ -92,15 +96,24 @@ const FlatList: React.FC<Props> = ({
                     tokens={{ padding: 10 }}
                     grow={maxWidth}
                   >
-                    {!isArray ? (<Text className={mergedStyles.text}>{item[fieldName]}</Text>) : (
+                    {!isArray ? (
+                      <Text className={mergedStyles.text}>
+                        {item[fieldName]}
+                      </Text>
+                    ) : (
                       <Text>
-                        {item[fieldName].map((obj: any) => obj[isArray.fieldName]).join(' - ')}
+                        {item[fieldName]
+                          .map((obj: any) => obj[isArray.fieldName])
+                          .join(' - ')}
                       </Text>
                     )}
                   </Stack.Item>
                 ))}
               </Stack>
-            )) : <Spinner label="Carregando..." />}
+            ))
+          ) : (
+            <Spinner label="Carregando..." />
+          )}
         </Stack>
       </Stack>
     </View>

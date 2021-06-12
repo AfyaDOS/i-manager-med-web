@@ -5,22 +5,23 @@ import React, { useEffect, useRef, useState } from 'react';
 interface Props extends Omit<ITextFieldProps, 'onFocus' | 'onChange' | 'defaultValue' | 'errorMessage' | 'value'> {
   name: string;
   mask?: string;
+  numeric?: boolean;
 }
 
 const Input: React.FC<Props> = ({
-  name, label, mask, type, ...rest
+  name, label, mask, numeric, ...rest
 }) => {
   const {
     fieldName, defaultValue, registerField, error, clearError,
   } = useField(name);
   const [inputValue, setInputValue] = useState<string | undefined>();
-  const inputRef = useRef(null);
+  const inputRef = useRef<string | undefined>();
 
   useEffect(() => {
     registerField({
       name: fieldName,
       ref: inputRef,
-      getValue: (ref) => (type === 'number' ? ref.current?.replace(/\D/g, '') : ref.current),
+      getValue: (ref) => (numeric ? ref.current?.replace(/\D/g, '') : ref.current),
       setValue: (ref, text: string | undefined) => {
         setInputValue(text);
       },
@@ -31,7 +32,6 @@ const Input: React.FC<Props> = ({
   }, [inputValue, fieldName, registerField]);
 
   useEffect(() => {
-    // @ts-ignore
     inputRef.current = inputValue;
   }, [inputValue]);
 
@@ -66,7 +66,6 @@ const Input: React.FC<Props> = ({
     <TextField
       {...rest}
       label={label}
-      type="text"
       value={inputValue}
       onChange={(_, text) => handleChange(text)}
       onFocus={clearError}
