@@ -1,69 +1,48 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { useHistory } from 'react-router-dom';
-import { PrimaryButton, TextField, useTheme } from '@fluentui/react';
-import { toast, ToastContainer } from 'react-toastify';
+import { PrimaryButton, Text } from '@fluentui/react';
+import { toast } from 'react-toastify';
+import { Form } from '@unform/web';
 import { ContextApp } from '../../context';
-import { Card } from './styles';
 import { Header } from '../../components/Header';
 import { Footer } from '../../components/Footer';
-import logo from '../../assests/images/logo.png';
-import logoAfyados from '../../assests/images/logosAfyados.png';
-import doctor from '../../assests/images/doctor.png';
 import 'react-toastify/dist/ReactToastify.min.css';
+import { Container, Panel } from '../../styles';
+import { Input } from '../../components';
 
 const Login: React.FC = () => {
   const { login } = useContext(ContextApp);
-  const theme = useTheme();
-  const [email, setUser] = useState<string | undefined>();
-  const [password, setPassword] = useState<string | undefined>();
-
-  const notify = () => toast.error('Usuário e/ou Senha incorretos!', {
-    position: 'top-right',
-    autoClose: 5000,
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-  });
 
   const history = useHistory();
 
-  function userLogin() {
-    login({ email, password }).then((resp) => {
-      if (resp) {
-        history.push('/client/registry');
+  async function handleLogin(data: any) {
+    try {
+      const success = await login(data);
+
+      if (success) {
+        toast.success('Login efetuado com sucesso !!', {
+          autoClose: 1000,
+          onClose: () => history.push('/home'),
+        });
       }
-      notify();
-      return resp;
-    });
+    } catch (error) {
+      toast.error('Falha ao tentar fazer login');
+    }
   }
-
   return (
-    <div>
-      <Card theme={theme}>
-        <Header />
-
-        <body>
-          <img src={doctor} alt="dro" />
-          <div className="cardLogin">
-            <img src={logo} alt="logo" className="logoMed" />
-            <TextField onChange={(_, text) => setUser(text)} label="Usuário:" />
-            <TextField onChange={(_, text) => setPassword(text)} label="Senha:" type="password" />
-            <PrimaryButton onClick={userLogin}>
-              Entrar
-            </PrimaryButton>
-            <img src={logoAfyados} alt="logo" className="logoAfyados" />
-          </div>
-
-          <div>
-            <ToastContainer />
-          </div>
-
-        </body>
-        <Footer />
-      </Card>
-    </div>
+    <Container>
+      <Header />
+      <Panel>
+        <Form onSubmit={handleLogin}>
+          <Input name="email" />
+          <Input name="password" />
+          <PrimaryButton>
+            <Text>ENTRAR</Text>
+          </PrimaryButton>
+        </Form>
+      </Panel>
+      <Footer />
+    </Container>
   );
 };
 

@@ -8,6 +8,8 @@ import {
   SpecialistRegistryScreen,
   ClientsRegisterScreen,
   SpecialistScreen,
+  MedRecordCreateScreen,
+  MedRecordHistoryScreen,
 } from '../screens';
 // import { refPanel } from '../utils';
 import { PrivateRoutes } from './app.routes';
@@ -28,6 +30,12 @@ const Routes: React.FC = () => (
       </PrivateRoutes>
       <PrivateRoutes exact path="/specialist/registry">
         <SpecialistRegistryScreen />
+      </PrivateRoutes>
+      <PrivateRoutes exact path="/medrecord/create">
+        <MedRecordCreateScreen />
+      </PrivateRoutes>
+      <PrivateRoutes exact path="/medrecord/get">
+        <MedRecordHistoryScreen />
       </PrivateRoutes>
       <AuthRoutes path="/" exact>
         <HomeScreen />
