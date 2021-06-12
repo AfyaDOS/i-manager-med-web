@@ -4,11 +4,10 @@ import { PrimaryButton, Text } from '@fluentui/react';
 import { toast } from 'react-toastify';
 import { Form } from '@unform/web';
 import { ContextApp } from '../../context';
-import { Card } from './styles';
 import { Header } from '../../components/Header';
 import { Footer } from '../../components/Footer';
 import 'react-toastify/dist/ReactToastify.min.css';
-import { Panel } from '../../styles';
+import { Container, Panel } from '../../styles';
 import { Input } from '../../components';
 
 const Login: React.FC = () => {
@@ -31,21 +30,19 @@ const Login: React.FC = () => {
     }
   }
   return (
-    <div>
-      <Card>
-        <Header />
-        <Panel>
-          <Form onSubmit={handleLogin}>
-            <Input name="email" />
-            <Input name="password" />
-            <PrimaryButton>
-              <Text>ENTRAR</Text>
-            </PrimaryButton>
-          </Form>
-        </Panel>
-        <Footer />
-      </Card>
-    </div>
+    <Container>
+      <Header />
+      <Panel>
+        <Form onSubmit={handleLogin}>
+          <Input name="email" />
+          <Input name="password" />
+          <PrimaryButton>
+            <Text>ENTRAR</Text>
+          </PrimaryButton>
+        </Form>
+      </Panel>
+      <Footer />
+    </Container>
   );
 };
 
