@@ -9,6 +9,8 @@ interface IData {
 interface IContext {
   login: (data: IData) => Promise<boolean>;
   user: {
+    id?: string;
+    name?: string;
     isAuthenticated: boolean;
     token?: string;
   };

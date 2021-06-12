@@ -1,10 +1,12 @@
-import React, { useContext } from 'react';
+import React, { useContext, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import {
   Image, PrimaryButton, Stack, Text,
 } from '@fluentui/react';
 import { toast } from 'react-toastify';
 import { Form } from '@unform/web';
+import * as Yup from 'yup';
+import { FormHandles } from '@unform/core';
 import { ContextApp } from '../../context';
 import { Header } from '../../components/Header';
 import { Footer } from '../../components/Footer';
@@ -13,14 +15,23 @@ import { Input } from '../../components';
 import doctorImage from '../../assests/images/doctor.png';
 import logoImage from '../../assests/images/logo.png';
 import styles from './styles';
+import { setErrors } from '../../utils';
 
 const Login: React.FC = () => {
   const { login } = useContext(ContextApp);
+  const formRef = useRef<FormHandles>(null);
 
   const history = useHistory();
 
   async function handleLogin(data: any) {
     try {
+      const schema = Yup.object().shape({
+        email: Yup.string().email().required('Para fazer login é necessário um e-mail.'),
+        password: Yup.string().required('A senha é obrigatória'),
+      });
+
+      await schema.validate(data, { abortEarly: false });
+
       const success = await login(data);
 
       if (success) {
@@ -30,7 +41,8 @@ const Login: React.FC = () => {
         });
       }
     } catch (error) {
-      toast.error('Falha ao tentar fazer login');
+      setErrors(formRef, error);
+      toast.error(`Falha ao tentar fazer login, ${error?.message}`);
     }
   }
   return (
@@ -38,8 +50,8 @@ const Login: React.FC = () => {
       <Header />
       <View style={styles.boxContent}>
         <Image style={styles.imageDoctor} src={doctorImage} />
-        <Form style={{ width: 650 }} onSubmit={handleLogin}>
-          <Panel>
+        <Panel style={{ maxWidth: 650 }}>
+          <Form ref={formRef} onSubmit={handleLogin}>
             <Image src={logoImage} />
             <Text variant="xxLargePlus">Bem vindo de volta.</Text>
             <Text variant="large">
@@ -47,14 +59,24 @@ const Login: React.FC = () => {
               senha.
             </Text>
             <Stack style={styles.containerBox} tokens={{ childrenGap: 20 }}>
-              <Input label="E-mail:" name="email" />
-              <Input label="Nome completo:" name="name" />
-              <PrimaryButton style={{ marginTop: 30 }} type="submit">
-                enviar
+              <Input
+                styles={{ fieldGroup: { height: 40 } }}
+                label="E-mail:"
+                name="email"
+                type="email"
+              />
+              <Input
+                styles={{ fieldGroup: { height: 40 } }}
+                label="Senha:"
+                name="password"
+                type="password"
+              />
+              <PrimaryButton style={styles.buttonLogin} type="submit">
+                ENTRAR
               </PrimaryButton>
             </Stack>
-          </Panel>
-        </Form>
+          </Form>
+        </Panel>
       </View>
       <Footer />
     </Container>
