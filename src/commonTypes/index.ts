@@ -61,3 +61,11 @@ export interface ISpecialist {
     updated_at: string;
   };
 }
+
+export interface IMedRecord {
+  id: string;
+  client: IClient;
+  specialist: ISpecialist;
+  created_at: string;
+  description: string;
+}

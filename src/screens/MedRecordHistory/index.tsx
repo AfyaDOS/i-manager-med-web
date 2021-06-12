@@ -10,30 +10,30 @@ import { Footer } from '../../components/Footer';
 import { Container, Panel, View } from '../../styles';
 import medRecordImg from '../../assests/images/med-record.png';
 import { useApi } from '../../services/index';
-import { IClient, ISpecialist } from '../../commonTypes/index';
+import { IMedRecord } from '../../commonTypes/index';
 import { FlatList, IColumns } from '../../components/FlatList';
-
-interface IMedRecord {
-  id: string;
-  client: IClient;
-  specialist: ISpecialist;
-  // eslint-disable-next-line camelcase
-  create_at: Date;
-  description: string;
-}
 
 const MedRecordHistory: React.FC = () => {
   const clientID = 'cd4a6977-8612-4250-97b2-2740bdf8b832';
 
-  const [medRecords, setMedRecord] = useState<IMedRecord[]>([]);
   const api = useApi();
   const history = useHistory();
   const [itemSelect, setItemSelect] = useState<string>();
+  const [listRecords, setListRecords] = useState();
 
   async function loadMedRecords() {
     try {
-      const response = await api.get(`/medrecord/get/${clientID}`);
-      if (response) setMedRecord(response.data);
+      const { data } = await api.get(`/medrecord/get/${clientID}`);
+      if (data) {
+        setListRecords(data.map((item: IMedRecord) => ({
+          clientName: item.client.name,
+          specialistName: item.specialist.name,
+          description: item.description,
+          date: new Date(item.created_at).toLocaleDateString(),
+          time: new Date(item.created_at).toLocaleTimeString(),
+          id: item.id,
+        })));
+      }
     } catch (error) {
       toast.error('Erro ao obter o prontuário');
     }
@@ -53,21 +53,27 @@ const MedRecordHistory: React.FC = () => {
 
   const columns: IColumns[] = [
     {
-      fieldName: 'client',
-      key: 'client',
+      fieldName: 'clientName',
+      key: 'clientName',
       name: 'Paciente',
       maxWidth: 120,
     },
     {
-      fieldName: 'specialist',
-      key: 'specialist',
+      fieldName: 'specialistName',
+      key: 'specialistName',
       name: 'Especialista',
       maxWidth: 120,
     },
     {
-      fieldName: 'create_at',
-      key: 'create_at',
+      fieldName: 'date',
+      key: 'date',
       name: 'Data',
+      maxWidth: 120,
+    },
+    {
+      fieldName: 'time',
+      key: 'time',
+      name: 'Hora',
       maxWidth: 120,
     },
     {
@@ -110,14 +116,14 @@ const MedRecordHistory: React.FC = () => {
           <View style={{ flexDirection: 'row' }}>
             <Image src={medRecordImg} width={60} />
             <View style={{ marginLeft: 20 }}>
-              <Text variant="xxLarge">Especialistas</Text>
+              <Text variant="xxLarge">Prontuário</Text>
             </View>
           </View>
         </View>
         <CommandBar items={commandBarBtn} />
         <FlatList
           columns={columns}
-          data={medRecords}
+          data={listRecords}
           setSelection={(id) => setItemSelect(id)}
         />
       </Panel>

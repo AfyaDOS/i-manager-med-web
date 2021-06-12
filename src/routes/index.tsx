@@ -36,7 +36,7 @@ const Routes: React.FC = () => (
       <PrivateRoutes exact path="/specialist/registry">
         <SpecialistRegistryScreen />
       </PrivateRoutes>
-      <PrivateRoutes exact path="/medrecord/create">
+      <PrivateRoutes exact path="/medrecord">
         <MedRecordCreateScreen />
       </PrivateRoutes>
       <PrivateRoutes exact path="/medrecord/get">
