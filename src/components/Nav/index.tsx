@@ -28,6 +28,12 @@ const navLinkGroups: INavLinkGroup[] = [
         iconProps: { iconName: 'Home' },
       },
       {
+        name: 'Usuários',
+        url: 'user',
+        key: '/user',
+        iconProps: { iconName: 'Telemarketer' },
+      },
+      {
         name: 'Pacientes',
         url: 'clients',
         key: '/client',

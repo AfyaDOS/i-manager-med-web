@@ -5,6 +5,7 @@ import {
   HomeScreen,
   LoginScreen,
   UserRegistryScreen,
+  UserScreen,
   SpecialistRegistryScreen,
   ClientsRegisterScreen,
   SpecialistScreen,
@@ -26,6 +27,9 @@ const Routes: React.FC = () => (
       </PrivateRoutes>
       <PrivateRoutes exact path="/client/registry">
         <ClientsRegisterScreen />
+      </PrivateRoutes>
+      <PrivateRoutes exact path="/user">
+        <UserScreen />
       </PrivateRoutes>
       <PrivateRoutes exact path="/user/registry">
         <UserRegistryScreen />
