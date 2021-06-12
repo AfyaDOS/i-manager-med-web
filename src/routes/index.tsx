@@ -10,6 +10,8 @@ import {
   SpecialistScreen,
   MedRecordCreateScreen,
   MedRecordHistoryScreen,
+  NotFoundScreen,
+  ClientScreen,
 } from '../screens';
 // import { refPanel } from '../utils';
 import { PrivateRoutes } from './app.routes';
@@ -19,6 +21,9 @@ const Routes: React.FC = () => (
   <BrowserRouter>
     <Switch>
       {/* <Drawer ref={refPanel} /> */}
+      <PrivateRoutes exact path="/client">
+        <ClientScreen />
+      </PrivateRoutes>
       <PrivateRoutes exact path="/client/registry">
         <ClientsRegisterScreen />
       </PrivateRoutes>
@@ -44,7 +49,7 @@ const Routes: React.FC = () => (
         <LoginScreen />
       </AuthRoutes>
       <Route path="*">
-        <div>Page Not Faound</div>
+        <NotFoundScreen />
       </Route>
     </Switch>
   </BrowserRouter>

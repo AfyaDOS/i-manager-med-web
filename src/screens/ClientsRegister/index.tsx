@@ -19,7 +19,7 @@ import { Footer } from '../../components/Footer';
 import { Container, Panel, View } from '../../styles';
 import { Row, Column } from './styles';
 import imageHeader from '../../assests/images/patients.png';
-import { states } from '../../utils';
+import { setErrors, states } from '../../utils';
 
 const bloodtype = [{
   key: 'sdasdasdasd',
@@ -83,27 +83,13 @@ const ClientsRegister: React.FC = () => {
       });
 
       await schema.validate(data, { abortEarly: false });
-
-      console.log(JSON.stringify(data));
     } catch (err) {
-      const validationErrors = {};
-      if (err instanceof Yup.ValidationError) {
-        err.inner.forEach((error) => {
-          if (typeof error.path === 'string') {
-            Object.assign(validationErrors, { [error.path]: error.message });
-          }
-        });
-        if (typeof formRef?.current?.setErrors === 'function') {
-          formRef.current.setErrors(validationErrors);
-        }
-      }
+      setErrors(formRef, err);
     }
   }, []);
 
   async function handleSearch() {
     const postcode = formRef.current?.getFieldValue('address.postcode');
-
-    console.log(postcode);
 
     try {
       if (!postcode) return;
@@ -130,12 +116,12 @@ const ClientsRegister: React.FC = () => {
   return (
     <Container>
       <Header />
-      <Form
-        style={{ height: 'calc(100% - 100px)' }}
-        ref={formRef}
-        onSubmit={handleSubmit}
-      >
-        <Panel>
+      <Panel>
+        <Form
+          style={{ height: 'calc(100% - 100px)' }}
+          ref={formRef}
+          onSubmit={handleSubmit}
+        >
           <View>
             <View style={{ flexDirection: 'row', marginTop: 20 }}>
               <Image src={imageHeader} width={60} />
@@ -151,17 +137,17 @@ const ClientsRegister: React.FC = () => {
           <Row>
             <Column>
               <Input
+                numeric
                 label="CPF:"
                 name="cpf"
-                type="number"
                 mask="$$$.$$$.$$$-$$"
               />
               <Input label="Nome completo:" name="name" />
               <Scope path="address">
                 <Input
+                  numeric
                   onBlur={handleSearch}
                   label="CEP:"
-                  type="number"
                   name="postcode"
                   mask="$$.$$$-$$$"
                 />
@@ -186,14 +172,14 @@ const ClientsRegister: React.FC = () => {
             </Column>
             <Column>
               <Input
+                numeric
                 label="Telefone:"
-                type="number"
                 name="phone"
                 mask="($$) $$$$-$$$$"
               />
               <Input
+                numeric
                 label="Celular:"
-                type="number"
                 name="cellphone"
                 mask="($$) $.$$$$-$$$$"
               />
@@ -203,14 +189,10 @@ const ClientsRegister: React.FC = () => {
               <PrimaryButton style={{ marginTop: 30 }} type="submit">
                 enviar
               </PrimaryButton>
-
-              <PrimaryButton style={{ marginTop: 30 }} type="button" onClick={() => formRef.current?.reset()}>
-                enviar
-              </PrimaryButton>
             </Column>
           </Row>
-        </Panel>
-      </Form>
+        </Form>
+      </Panel>
       <Footer />
     </Container>
   );

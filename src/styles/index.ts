@@ -11,7 +11,7 @@ export const Container = styled.div`
 
 export const Panel = styled.div`
     display: flex;
-    height: calc(100% - 60px);
+    flex: 1;
     flex-direction: column;
     background-color: #f1f1f1;
     margin: 20px;

@@ -6,3 +6,5 @@ export { SpecialistRegistry as SpecialistRegistryScreen } from './SpecialistRegi
 export { Specialist as SpecialistScreen } from './Specialist';
 export { MedRecordCreate as MedRecordCreateScreen } from './MedRecordCreate';
 export { MedRecordHistory as MedRecordHistoryScreen } from './MedRecordHistory';
+export { NotFound as NotFoundScreen } from './NotFound';
+export { Clients as ClientScreen } from './Clients';

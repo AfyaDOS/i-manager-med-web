@@ -13,4 +13,5 @@ export default makeStyles.create({
     alignSelf: 'flex-end',
   },
   containerBox: { marginTop: 20 },
+  buttonLogin: { marginTop: 30, height: 40, fontSize: 20 },
 });
