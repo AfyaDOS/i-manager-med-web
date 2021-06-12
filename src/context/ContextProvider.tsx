@@ -8,7 +8,7 @@ interface IUser{
 }
 
 const ContextProvider: React.FC = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<IUser>();
   const [token, setToken] = useState<string | undefined>();
   const api = useApi();

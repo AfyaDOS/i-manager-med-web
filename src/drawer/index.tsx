@@ -2,8 +2,6 @@ import React, { forwardRef, useImperativeHandle, useState } from 'react';
 import { Panel, PanelType } from '@fluentui/react';
 import { Nav } from '../components';
 
-// import { Container } from './styles';
-
 interface Props{
   state?: boolean;
 }
@@ -13,8 +11,7 @@ export interface IHandlePanel{
 }
 
 const Drawer = forwardRef<IHandlePanel, Props>((props, ref) => {
-  console.log(props);
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
 
   function open() {
     setIsOpen((prev) => !prev);
@@ -26,6 +23,7 @@ const Drawer = forwardRef<IHandlePanel, Props>((props, ref) => {
     <Panel
       isLightDismiss
       styles={{
+        commands: { display: 'none' },
         content: {
           padding: 0,
           margin: 0,

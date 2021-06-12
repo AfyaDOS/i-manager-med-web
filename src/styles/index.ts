@@ -16,7 +16,7 @@ export const Panel = styled.div`
     background-color: #f1f1f1;
     margin: 20px;
     box-shadow: 0 0 50px -10px #0057d99e;
-    padding: 10px 10% 10px 10%;
+    padding: 10px 5% 10px 5%;
 `;
 
 export const View = styled.div`

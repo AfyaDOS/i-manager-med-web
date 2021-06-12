@@ -38,6 +38,15 @@ const Clients: React.FC = () => {
   ];
   const commandBarBtn: ICommandBarItemProps[] = [
     {
+      key: 'add',
+      text: 'Adicionar',
+      split: true,
+      iconProps: {
+        iconName: 'Add',
+        styles: { root: { color: 'red' } },
+      },
+    },
+    {
       key: 'excluir',
       text: 'Excluir',
       split: true,
