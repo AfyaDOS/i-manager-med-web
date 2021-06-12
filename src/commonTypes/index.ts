@@ -10,7 +10,7 @@ export enum EBloodTypes {
   'AB-',
 }
 
-interface IBloodType {
+export interface IBloodType {
   id: string;
   typeOf: string;
 }

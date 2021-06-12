@@ -6,7 +6,7 @@ const Footer: React.FC = () => (
   <CardFooter>
     <h5>© IManagerMED. 2021. Gente é tudo para gente!</h5>
     <div className="git">
-      <p>nos sigua!</p>
+      <p>nos siga!</p>
       <img src={logoGit} alt="logo git" className="logoGit" />
     </div>
   </CardFooter>

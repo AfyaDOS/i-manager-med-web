@@ -1,5 +1,7 @@
 import React from 'react';
-import { Image, PrimaryButton, Text } from '@fluentui/react';
+import {
+  Image, ImageFit, PrimaryButton, Text,
+} from '@fluentui/react';
 import { useHistory } from 'react-router-dom';
 import { Header } from '../../components/Header';
 import { Footer } from '../../components/Footer';
@@ -17,9 +19,9 @@ const Home: React.FC = () => {
       <View style={styles.boxContent}>
         <Image style={styles.imageDoctor} src={doctor} />
         <Panel style={{ maxWidth: '30%', marginLeft: 'auto' }}>
-          <Image src={logoImage} />
+          <Image src={logoImage} width="100%" />
           <Text style={styles.text} variant="xxLargePlus">A saúde do seu paciente é o nosso propósito!</Text>
-          <Image style={styles.imageLogo} src={logoAfyados} />
+          <Image imageFit={ImageFit.contain} style={styles.imageLogo} src={logoAfyados} height="40%" />
           <PrimaryButton style={styles.buttonLogin} onClick={() => history.push('/login')}>
             Entrar
           </PrimaryButton>

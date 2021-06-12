@@ -13,12 +13,9 @@ export default makeStyles.create({
   },
   containerBox: { marginTop: 20 },
   buttonLogin: { marginTop: 30, height: 40, fontSize: 20 },
-  text: { textAlign: 'center' },
+  text: { textAlign: 'center', marginBottom: 30 },
   imageLogo: {
     marginLeft: 'auto',
     marginRight: 'auto',
-    height: 240,
-    marginTop: 30,
-    marginBottom: 30,
   },
 });
