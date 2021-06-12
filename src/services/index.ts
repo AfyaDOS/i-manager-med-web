@@ -6,7 +6,7 @@ const authToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijc2Y2FlNTJkLTkz
 
 export function useApi(): AxiosInstance {
   const { user } = useContext(ContextApp);
-  const autorization = `Bearer ${user?.token || authToken}` || undefined;
+  const autorization = `${user?.token || authToken}` || undefined;
 
   const url = 'http://localhost:5000';
 
