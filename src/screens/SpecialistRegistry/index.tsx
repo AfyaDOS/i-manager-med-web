@@ -3,7 +3,6 @@ import React, {
   useEffect,
   useRef,
   useCallback,
-  useContext,
 } from 'react';
 import {
   ComboBox,
@@ -20,7 +19,6 @@ import { Form } from '@unform/web';
 import { FormHandles, Scope } from '@unform/core';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
-import { ContextApp } from '../../context';
 import { useApi } from '../../services';
 import { Input } from '../../components';
 import specialist from '../../assests/images/specialist.png';
@@ -42,7 +40,6 @@ const comboBoxStyles: Partial<IComboBoxStyles> = { root: { maxWidth: 800 } };
 
 const SpecialistRegistry: React.FC = () => {
   const { state } = useLocation<ILocation>();
-  const { user } = useContext(ContextApp);
   const api = useApi();
   const formRef = useRef<FormHandles>(null);
   const [options, setOptions] = useState<IComboBoxOption[]>([]);
