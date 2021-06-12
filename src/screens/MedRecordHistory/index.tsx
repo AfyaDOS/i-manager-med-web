@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { DefaultButton } from '@fluentui/react/lib/Button';
-import api from '../../services/index';
+import { useApi } from '../../services/index';
 
 interface IMedRecord {
   id: string;
@@ -12,6 +12,7 @@ interface IMedRecord {
 }
 
 const MedRecordHistory: React.FC = () => {
+  const api = useApi();
   const clientID = 'cd4a6977-8612-4250-97b2-2740bdf8b832';
 
   const [medRecords, setMedRecord] = useState<IMedRecord[]>([]);
@@ -52,13 +53,13 @@ const MedRecordHistory: React.FC = () => {
                   especilista
                 </td>
                 <td>
-                  { medRecord.create_at }
+                  {medRecord.create_at}
                 </td>
                 <td>
-                  { medRecord.create_at }
+                  {medRecord.create_at}
                 </td>
                 <td>
-                  { medRecord.description }
+                  {medRecord.description}
                 </td>
                 <td>
                   <DefaultButton text="Editar" allowDisabledFocus />

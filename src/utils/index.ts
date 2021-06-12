@@ -1,4 +1,5 @@
-import { createRef } from 'react';
+/* eslint-disable no-unused-vars */
+import React, { createRef } from 'react';
 import { IHandlePanel } from '../drawer';
 
 export const refPanel = createRef<IHandlePanel>();
@@ -130,3 +131,13 @@ export function setData(ref: any, data: any) {
     });
   }
 }
+
+type NamedStyles<T> = { [P in keyof T]: React.CSSProperties };
+
+export const makeStyles = {
+  create<T extends NamedStyles<T> | NamedStyles<any>>(
+    styles: T | NamedStyles<T>,
+  ): T {
+    return styles as T;
+  },
+};

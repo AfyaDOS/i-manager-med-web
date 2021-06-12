@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import {
   Check, mergeStyleSets, Separator, Spinner, Stack, Text,
 } from '@fluentui/react';
@@ -12,13 +13,16 @@ export interface IColumns {
   fieldName: string;
   minWidth?: number;
   maxWidth: number;
+  isArray?: {
+    fieldName: string;
+  };
 }
 
 interface Props {
   columns: IColumns[];
   data?: any;
   clear?: boolean;
-  setSelection: (key?: string) => void;
+  setSelection: (id:string) => void;
 }
 
 const FlatList: React.FC<Props> = ({
@@ -81,14 +85,18 @@ const FlatList: React.FC<Props> = ({
                 <Stack.Item tokens={{ padding: 10 }}>
                   <Check checked={checked === item.id} />
                 </Stack.Item>
-                {columns.map(({ maxWidth, fieldName }) => (
+                {columns.map(({ maxWidth, fieldName, isArray }) => (
                   <Stack.Item
                     key={fieldName}
                     style={{ maxWidth }}
                     tokens={{ padding: 10 }}
                     grow={maxWidth}
                   >
-                    <Text className={mergedStyles.text}>{item[fieldName]}</Text>
+                    {!isArray ? (<Text className={mergedStyles.text}>{item[fieldName]}</Text>) : (
+                      <Text>
+                        {item[fieldName].map((obj: any) => obj[isArray.fieldName]).join(' - ')}
+                      </Text>
+                    )}
                   </Stack.Item>
                 ))}
               </Stack>

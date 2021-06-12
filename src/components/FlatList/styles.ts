@@ -5,13 +5,7 @@ export default makeStyles.create({
     backgroundColor: 'rgba(255,255,255)',
     padding: 10,
   },
-  textComercialName: {
-    minWidth: '40%',
-  },
-  textCnpj: {
-    minWidth: '30%',
-  },
-  buttonEdit: {
-    marginLeft: 'auto',
-  },
+  textComercialName: { minWidth: '40%' },
+  textCnpj: { minWidth: '30%' },
+  buttonEdit: { marginLeft: 'auto' },
 });
