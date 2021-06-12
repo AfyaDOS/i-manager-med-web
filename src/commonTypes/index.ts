@@ -1,4 +1,5 @@
-export enum IBloodTypes {
+/* eslint-disable no-shadow */
+export enum EBloodTypes {
   'A+',
   'A-',
   'B+',
@@ -8,7 +9,6 @@ export enum IBloodTypes {
   'AB+',
   'AB-',
 }
-
 
 interface IBloodType {
   id: string;
@@ -60,5 +60,4 @@ export interface ISpecialist {
     created_at: string;
     updated_at: string;
   };
-
 }

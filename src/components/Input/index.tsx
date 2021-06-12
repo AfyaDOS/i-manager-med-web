@@ -14,7 +14,7 @@ const Input: React.FC<Props> = ({
     fieldName, defaultValue, registerField, error, clearError,
   } = useField(name);
   const [inputValue, setInputValue] = useState<string | undefined>();
-  const inputRef = useRef(null);
+  const inputRef = useRef<string | undefined>();
 
   useEffect(() => {
     registerField({
@@ -31,7 +31,6 @@ const Input: React.FC<Props> = ({
   }, [inputValue, fieldName, registerField]);
 
   useEffect(() => {
-    // @ts-ignore
     inputRef.current = inputValue;
   }, [inputValue]);
 

@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { DefaultButton } from '@fluentui/react/lib/Button';
 import { useApi } from '../../services/index';
+import { IClient } from '../../commonTypes';
 
 interface IMedRecord {
   id: string;
-  client: Record<string, string>;
-  specialist: object;
-  // eslint-disable-next-line camelcase
   create_at: Date;
+  client: IClient;
   description: string;
 }
 
@@ -60,6 +59,7 @@ const MedRecordHistory: React.FC = () => {
                 </td>
                 <td>
                   {medRecord.description}
+                  {medRecord.client.name}
                 </td>
                 <td>
                   <DefaultButton text="Editar" allowDisabledFocus />

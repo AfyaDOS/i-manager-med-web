@@ -4,7 +4,7 @@ import { IHandlePanel } from '../drawer';
 
 export const refPanel = createRef<IHandlePanel>();
 
-export function open() {
+export function open(): void {
   refPanel.current?.open();
 }
 
@@ -119,7 +119,7 @@ export const states = [
   },
 ];
 
-export function setData(ref: any, data: any) {
+export function setData(ref: any, data: any): void {
   if (data && ref.current) {
     Object.entries(data).forEach(([key, value]) => {
       if (typeof value === 'object' && value !== null) {

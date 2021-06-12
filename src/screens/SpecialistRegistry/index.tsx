@@ -54,8 +54,8 @@ const SpecialistRegistry: React.FC = () => {
       setOptions(res.data);
     });
   }, []);
-  // @ts-ignore
   const getSpecialist: any[] = [];
+
   function specialties(value: any) {
     if (value?.selected === true) {
       getSpecialist.push(value);

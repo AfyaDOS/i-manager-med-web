@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
+    position: relative;
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -21,4 +22,18 @@ export const Panel = styled.div`
 export const View = styled.div`
     display: flex;
     flex-direction: column;
+`;
+
+export const Row = styled.div`
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    height: 100%
+`;
+
+export const Column = styled.div`
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: space-evenly;
 `;
