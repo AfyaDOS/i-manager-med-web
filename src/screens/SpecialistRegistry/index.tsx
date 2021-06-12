@@ -32,7 +32,7 @@ import {
 import { Container, Panel, View } from '../../styles';
 import { setData } from '../../utils';
 
-interface ILocation{
+interface ILocation {
   item?: ISpecialist
 }
 
@@ -54,13 +54,13 @@ const SpecialistRegistry: React.FC = () => {
       setOptions(res.data);
     });
   }, []);
-  // @ts-ignore
   const getSpecialist: any[] = [];
+
   function specialties(value: any) {
     if (value?.selected === true) {
       getSpecialist.push(value);
+      console.log(getSpecialist);
     }
-    console.log(getSpecialist);
   }
 
   const handleSubmit = useCallback(async (data: any) => {
@@ -94,6 +94,22 @@ const SpecialistRegistry: React.FC = () => {
         }
       }
     }
+    api.post('/specialist', {
+      name: formRef.current?.getFieldValue('name'),
+      email: formRef.current?.getFieldValue('email'),
+      registry: formRef.current?.getFieldValue('registry'),
+      phone: formRef.current?.getFieldValue('phone'),
+      cell: formRef.current?.getFieldValue('cell'),
+      specialties: getSpecialist,
+      address: {
+        city: formRef.current?.getFieldValue('address.city'),
+        state: formRef.current?.getFieldValue('address.state'),
+        street: formRef.current?.getFieldValue('address.street'),
+        district: formRef.current?.getFieldValue('address.district'),
+        numberOf: formRef.current?.getFieldValue('address.numberOf'),
+        postcode: formRef.current?.getFieldValue('address.postcode'),
+      },
+    }).then((resp) => console.log(resp)).catch((e) => console.log(e));
   }, []);
   async function handleSearch() {
     const postcode = formRef.current?.getFieldValue('address.postcode');
@@ -131,7 +147,7 @@ const SpecialistRegistry: React.FC = () => {
               <Input label="Nome completo:" name="name" />
               <Input label="Email:" name="email" />
               <Scope path="address">
-                <Input onBlur={handleSearch} label="CEP:" name="postcode" mask="$$.$$$-$$$" />
+                <Input onBlur={handleSearch} label="CEP:" name="postcode" />
                 <Input label="Endereço:" name="street" />
                 <Stack horizontal tokens={{ childrenGap: 20, padding: 0 }}>
                   <Stack.Item grow={10}>

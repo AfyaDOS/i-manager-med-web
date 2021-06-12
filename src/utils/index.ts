@@ -1,9 +1,10 @@
-import { createRef } from 'react';
+/* eslint-disable no-unused-vars */
+import React, { createRef } from 'react';
 import { IHandlePanel } from '../drawer';
 
 export const refPanel = createRef<IHandlePanel>();
 
-export function open() {
+export function open(): void {
   refPanel.current?.open();
 }
 
@@ -118,7 +119,7 @@ export const states = [
   },
 ];
 
-export function setData(ref: any, data: any) {
+export function setData(ref: any, data: any): void {
   if (data && ref.current) {
     Object.entries(data).forEach(([key, value]) => {
       if (typeof value === 'object' && value !== null) {
@@ -130,3 +131,13 @@ export function setData(ref: any, data: any) {
     });
   }
 }
+
+type NamedStyles<T> = { [P in keyof T]: React.CSSProperties };
+
+export const makeStyles = {
+  create<T extends NamedStyles<T> | NamedStyles<any>>(
+    styles: T | NamedStyles<T>,
+  ): T {
+    return styles as T;
+  },
+};

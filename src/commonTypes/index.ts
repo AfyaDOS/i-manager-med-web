@@ -1,4 +1,5 @@
-export enum IBloodTypes {
+/* eslint-disable no-shadow */
+export enum EBloodTypes {
   'A+',
   'A-',
   'B+',
@@ -9,13 +10,12 @@ export enum IBloodTypes {
   'AB-',
 }
 
-
-interface IBloodType{
+interface IBloodType {
   id: string;
   typeOf: string;
 }
 
-export interface IAddress{
+export interface IAddress {
   id: string;
   city: string;
   state: string;
@@ -42,4 +42,22 @@ export interface ISpecialist {
   registry: string;
   phone: string;
   cell: string;
+  specialties: {
+    id: string;
+    specialty: string;
+    text: string;
+    created_at: string;
+    updated_at: string;
+  }[];
+  address_id: {
+    id: string;
+    city: string;
+    state: string;
+    street: string;
+    district: string;
+    numberOf: string;
+    postcode: string;
+    created_at: string;
+    updated_at: string;
+  };
 }

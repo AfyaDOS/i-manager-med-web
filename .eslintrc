@@ -5,6 +5,7 @@
   },
   "extends": [
     "plugin:react/recommended",
+    "plugin:@typescript-eslint/recommended",
     "airbnb"
   ],
   "parser": "@typescript-eslint/parser",
@@ -51,6 +52,9 @@
     "import/prefer-default-export": "off",
     "react/prop-types": 0,
     "react/jsx-props-no-spreading": "off",
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": ["error"],
+    "camelcase": "off",
     "object-curly-newline": [
       "error",
       {
