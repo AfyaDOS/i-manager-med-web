@@ -18,7 +18,7 @@ import { Input } from '../../components';
 import specialist from '../../assests/images/user.png';
 import { Header } from '../../components/Header';
 import { Footer } from '../../components/Footer';
-import { ISpecialist } from '../../commonTypes';
+import { IUser } from '../../commonTypes';
 import {
   Row,
   Column,
@@ -27,7 +27,7 @@ import { Container, Panel, View } from '../../styles';
 import { setData } from '../../utils';
 
 interface ILocation {
-  item?: ISpecialist
+  item?: IUser
 }
 
 const UserRegistry: React.FC = () => {
@@ -61,19 +61,18 @@ const UserRegistry: React.FC = () => {
         }
       }
     }
-    api.post('/specialist', {
+    api.post('/users', {
       name: formRef.current?.getFieldValue('name'),
       email: formRef.current?.getFieldValue('email'),
-      passWord: formRef.current?.getFieldValue('password'),
+      password: formRef.current?.getFieldValue('password'),
 
     }).then(() => {
-      toast.success('Especialista cadastrado com sucesso !!', { autoClose: 3000 });
-      history.push('/specialist');
-      formRef.current?.clearField('address.state');
+      toast.success('Usuário cadastrado com sucesso !!', { autoClose: 3000 });
+      history.push('/user');
       formRef.current?.reset();
     })
       .catch((e) => {
-        toast.error(`Especialista não cadastrado !! ${e}`, { autoClose: 3000 });
+        toast.error(`Usuário não cadastrado !! ${e}`, { autoClose: 3000 });
         // onClose: () => history.go(0),
         // formRef.current?.reset();
       });
