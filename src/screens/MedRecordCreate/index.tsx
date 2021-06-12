@@ -2,7 +2,8 @@ import React, { useCallback, useRef } from 'react';
 import { Form } from '@unform/web';
 import { FormHandles, Scope } from '@unform/core';
 import * as Yup from 'yup';
-import { Input } from '../../components';
+import { IDropdownOption } from '@fluentui/react';
+import { Input, Select } from '../../components';
 
 const MedRecordCreate: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
@@ -32,9 +33,16 @@ const MedRecordCreate: React.FC = () => {
     }
   }, []);
 
+  const options:IDropdownOption[] = [
+    {
+      key: 'dojansmfa',
+      text: 'Gustavo',
+    },
+  ];
   return (
     <Form ref={formRef} onSubmit={handleSubmit}>
       <Input label="Nome do paciente:" name="name" />
+      <Select name="client" label="Nome do paciente:" options={options} />
       <Input label="Nome do especialista:" name="specialist" />
       <Scope path="description">
         <Input label="Descrição" name="description" />
