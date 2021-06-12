@@ -9,42 +9,41 @@ import { useHistory } from 'react-router-dom';
 import { Header } from '../../components/Header';
 import { Footer } from '../../components/Footer';
 import { Container, Panel, View } from '../../styles';
-import specialistImg from '../../assests/images/specialist.png';
+import userImg from '../../assests/images/user.png';
 import { useApi } from '../../services/index';
-import { ISpecialist } from '../../commonTypes';
+import { IUser } from '../../commonTypes';
 import { FlatList, IColumns } from '../../components/FlatList';
 
-const Specialist: React.FC = () => {
-  const [specialists, setSpeclialist] = useState<ISpecialist[]>([]);
+const User: React.FC = () => {
+  const [users, setUser] = useState<IUser[]>([]);
   const api = useApi();
   const history = useHistory();
   const [itemSelect, setItemSelect] = useState<string>();
 
-  const getSpecialists = useCallback(async () => {
+  const getUsers = useCallback(async () => {
     try {
-      const { data } = await api.get('/specialist');
+      const { data } = await api.get('/users');
 
-      if (data) setSpeclialist(data);
+      if (data) setUser(data);
     } catch (error) {
-      toast.error('Erro ao obter a lista de especialistas');
+      toast.error('Erro ao obter a lista de usuários');
     }
   }, []);
 
   useEffect(() => {
-    getSpecialists();
+    getUsers();
   }, []);
+
   function handleAdd() {
-    history.push('/specialist/registry');
+    history.push('/user/registry');
   }
   function handleEdit() {
-    if (specialists.filter((specialis) => specialis.id === itemSelect)[0]) {
-      history.push('/specialist/registry', { item: specialists.filter((specialis) => specialis.id === itemSelect)[0] });
-    }
+    history.push('/user/registry', { item: users.filter((specialis) => specialis.id === itemSelect)[0] });
   }
 
   function handleDelete() {
-    api.delete(`/specialist/${itemSelect}`).then(() => {
-      toast.success('Especialista deletado com sucesso !!', { autoClose: 1000 });
+    api.delete(`/users/${itemSelect}`).then(() => {
+      toast.success('Usuário deletado com sucesso !!', { autoClose: 3000 });
       history.go(0);
     });
   }
@@ -54,39 +53,14 @@ const Specialist: React.FC = () => {
     {
       fieldName: 'name',
       key: 'name',
-      name: 'Especialista',
+      name: 'Usuário',
       maxWidth: 120,
-    },
-    {
-      fieldName: 'registry',
-      key: 'registry',
-      name: 'Registro',
-      maxWidth: 120,
-    },
-    {
-      fieldName: 'specialties',
-      key: 'name',
-      name: 'Especialidades',
-      maxWidth: 120,
-      isArray: { fieldName: 'specialty' },
     },
     {
       fieldName: 'email',
       key: 'email',
       name: 'E-mail',
-      maxWidth: 120,
-    },
-    {
-      fieldName: 'phone',
-      key: 'phone',
-      name: 'Telefone',
-      maxWidth: 120,
-    },
-    {
-      fieldName: 'cell',
-      key: 'cell',
-      name: 'Celular',
-      maxWidth: 120,
+      maxWidth: 360,
     },
   ];
   const commandBarBtn: ICommandBarItemProps[] = [
@@ -126,9 +100,9 @@ const Specialist: React.FC = () => {
         />
         <View>
           <View style={{ flexDirection: 'row' }}>
-            <Image src={specialistImg} width={60} />
+            <Image src={userImg} width={60} />
             <View style={{ marginLeft: 20 }}>
-              <Text variant="xxLarge">Especialistas</Text>
+              <Text variant="xxLarge">Usuários</Text>
             </View>
           </View>
           <SearchBox
@@ -147,7 +121,7 @@ const Specialist: React.FC = () => {
         <CommandBar items={commandBarBtn} />
         <FlatList
           columns={columns}
-          data={specialists}
+          data={users}
           setSelection={(id) => setItemSelect(id)}
         />
       </Panel>
@@ -156,4 +130,4 @@ const Specialist: React.FC = () => {
   );
 };
 
-export { Specialist };
+export { User };

@@ -1,85 +1,116 @@
-import React, { useState, useEffect } from 'react';
+import React, {
+  useEffect,
+  useRef,
+  useCallback,
+} from 'react';
 import {
-  TextField,
+  Image,
   PrimaryButton,
+  Text,
 } from '@fluentui/react';
+import * as Yup from 'yup';
+import { toast } from 'react-toastify';
+import { Form } from '@unform/web';
+import { useHistory, useLocation } from 'react-router-dom';
+import { FormHandles } from '@unform/core';
 import { useApi } from '../../services';
-import { Card, CardUser } from './styles';
-import user from '../../assests/images/user.png';
+import { Input } from '../../components';
+import specialist from '../../assests/images/user.png';
 import { Header } from '../../components/Header';
+import { Footer } from '../../components/Footer';
+import { ISpecialist } from '../../commonTypes';
+import {
+  Row,
+  Column,
+} from './styles';
+import { Container, Panel, View } from '../../styles';
+import { setData } from '../../utils';
+
+interface ILocation {
+  item?: ISpecialist
+}
 
 const UserRegistry: React.FC = () => {
+  const { state } = useLocation<ILocation>();
   const api = useApi();
-  const [name, setName] = useState<string | undefined>();
-  const [email, setEmail] = useState<string | undefined>();
-  const [password, setPassword] = useState<string | undefined>();
-  const headers = {
-    Authorization:
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImM0ZDIzZjhjLTczZjUtNDhiZC04NjliLWM5YmQ4M2Y4MGE0MSIsIm5hbWUiOiJtYXJjZWxvIiwiaWF0IjoxNjIzMTIwODUxLCJleHAiOjE2MjMyMDcyNTF9.UwFxvXyJtevb9csR14zSRhuIfI2mo5ScY5AsmqmNMuU',
-  };
+  const history = useHistory();
+  const formRef = useRef<FormHandles>(null);
 
   useEffect(() => {
-    api.get('/users', { headers }).then((res) => console.log(res.data));
+    setData(formRef, state?.item);
+  }, [state?.item]);
+
+  const handleSubmit = useCallback(async (data: any) => {
+    try {
+      const schema = Yup.object().shape({
+        name: Yup.string().required('O Nome é obrigatório !!'),
+        password: Yup.string().required('A senha é obrigatória !!'),
+        email: Yup.string().required('O Email é obrigatório !!'),
+      });
+      await schema.validate(data, { abortEarly: false });
+    } catch (err) {
+      const validationErrors = {};
+      if (err instanceof Yup.ValidationError) {
+        err.inner.forEach((error) => {
+          if (typeof error.path === 'string') {
+            Object.assign(validationErrors, { [error.path]: error.message });
+          }
+        });
+        if (typeof formRef?.current?.setErrors === 'function') {
+          formRef.current.setErrors(validationErrors);
+        }
+      }
+    }
+    api.post('/specialist', {
+      name: formRef.current?.getFieldValue('name'),
+      email: formRef.current?.getFieldValue('email'),
+      passWord: formRef.current?.getFieldValue('password'),
+
+    }).then(() => {
+      toast.success('Especialista cadastrado com sucesso !!', { autoClose: 3000 });
+      history.push('/specialist');
+      formRef.current?.clearField('address.state');
+      formRef.current?.reset();
+    })
+      .catch((e) => {
+        toast.error(`Especialista não cadastrado !! ${e}`, { autoClose: 3000 });
+        // onClose: () => history.go(0),
+        // formRef.current?.reset();
+      });
   }, []);
 
-  function register() {
-    api
-      .post(
-        '/users',
-        {
-          name,
-          email,
-          password,
-        },
-        { headers },
-      )
-      .then((res) => res.status);
-  }
-
   return (
-    <Card>
+    <Container>
       <Header />
-      <CardUser>
-        <div className="title">
-          <div>
-            <img src={user} alt="logo especialista" className="logo" />
-          </div>
-          <div className="textCardHeader">
-            <h1>Cadastro de Usuário</h1>
-            <p>
-              Para cadastrar, preencha os campos abaixo com os dados do
-              usuário.
-            </p>
-          </div>
-        </div>
+      <Form ref={formRef} onSubmit={handleSubmit} style={{ height: 'calc(100vh - 100px)' }}>
+        <Panel>
+          <View>
+            <View style={{ flexDirection: 'row' }}>
+              <Image src={specialist} width={60} />
+              <View style={{ marginLeft: 20 }}>
+                <Text variant="xxLarge">Cadastro de Especialista</Text>
+                <Text>
+                  Para cadastrar, preencha os campos abaixo com os dados do
+                  especialista.
+                </Text>
+              </View>
+            </View>
+          </View>
+          <Row>
+            <Column style={{ justifyContent: 'flex-start' }}>
+              <Input label="Nome completo:" name="name" placeholder="Ex: Marcelo" />
+              <Input label="Email:" name="email" placeholder="Ex: marcelo@teste.com" />
+              <Input label="Senha:" name="password" placeholder="Ex: ***" />
+              <PrimaryButton type="submit" style={{ marginTop: 29.04 }}>
+                Cadastrar
+              </PrimaryButton>
+            </Column>
+          </Row>
+        </Panel>
+      </Form>
+      <Footer />
+    </Container>
 
-        <div className="textColumn">
-          <TextField
-            onChange={(i, text) => setName(text)}
-            label="Name"
-            placeholder="Ex: Marcelo"
-            value={name}
-          />
-
-          <TextField
-            onChange={(i, text) => setEmail(text)}
-            label="E-mail"
-            placeholder="Ex: marcelo@email.com"
-            value={email}
-          />
-
-          <TextField
-            onChange={(i, text) => setPassword(text)}
-            label="Senha"
-            placeholder="Ex: *****"
-            value={password}
-          />
-          <PrimaryButton className="button" onClick={register}>
-            Cadastrar
-          </PrimaryButton>
-        </div>
-      </CardUser>
-    </Card>
   );
 };
 
