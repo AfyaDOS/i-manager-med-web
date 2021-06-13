@@ -53,8 +53,8 @@ const navLinkGroups: INavLinkGroup[] = [
       },
       {
         name: 'Prontuarios',
-        url: 'history',
-        key: '/history',
+        url: 'medrecord',
+        key: '/medrecord',
         iconProps: { iconName: 'DocumentSet' },
       },
     ],
