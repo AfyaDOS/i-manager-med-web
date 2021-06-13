@@ -68,5 +68,16 @@ export interface IUser{
     email: string;
     password: string;
     created_at: string;
-    updated_at: string;  
+    updated_at: string;
+}
+
+export interface ISpecialties{
+    specialties: {
+      id: string;
+      specialty: string;
+      text: string;
+      created_at: string;
+      updated_at: string;
+    };
+
 }

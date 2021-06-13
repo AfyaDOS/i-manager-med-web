@@ -38,14 +38,22 @@ const User: React.FC = () => {
     history.push('/user/registry');
   }
   function handleEdit() {
-    history.push('/user/registry', { item: users.filter((specialis) => specialis.id === itemSelect)[0] });
+    if (users.filter((specialis) => specialis.id === itemSelect)[0]) {
+      history.push('/user/registry', { item: users.filter((specialis) => specialis.id === itemSelect)[0] });
+    } else {
+      toast.warning('Você deve selecionar o Usuário!!', { autoClose: 3000 });
+    }
   }
 
   function handleDelete() {
-    api.delete(`/users/${itemSelect}`).then(() => {
-      toast.success('Usuário deletado com sucesso !!', { autoClose: 3000 });
-      history.go(0);
-    });
+    if (users.filter((specialis) => specialis.id === itemSelect)[0]) {
+      api.delete(`/users/${itemSelect}`).then(() => {
+        getUsers();
+        toast.success('Usuário deletado com sucesso !!', { autoClose: 3000 });
+      });
+    } else {
+      toast.warning('Você deve selecionar o Usuário!!', { autoClose: 3000 });
+    }
   }
   const searchBoxStyles: Partial<ISearchBoxStyles> = { root: { width: 200, marginTop: 10 } };
 

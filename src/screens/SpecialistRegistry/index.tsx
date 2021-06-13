@@ -56,14 +56,33 @@ const SpecialistRegistry: React.FC = () => {
       setOptions(res.data);
     });
   }, []);
-  const getSpecialist: any[] = [];
 
-  function specialties(value: any) {
-    if (value?.selected === true) {
-      getSpecialist.push(value);
-      console.log(getSpecialist);
-    }
-  }
+  const handleCreate = () => {
+    api.post('/specialist', {
+      name: formRef.current?.getFieldValue('name'),
+      email: formRef.current?.getFieldValue('email'),
+      registry: formRef.current?.getFieldValue('registry'),
+      phone: formRef.current?.getFieldValue('phone'),
+      cell: formRef.current?.getFieldValue('cell'),
+      specialties: comboBoxRef.current?.selectedOptions,
+      address: {
+        city: formRef.current?.getFieldValue('address.city'),
+        state: formRef.current?.getFieldValue('address.state'),
+        street: formRef.current?.getFieldValue('address.street'),
+        district: formRef.current?.getFieldValue('address.district'),
+        numberOf: formRef.current?.getFieldValue('address.numberOf'),
+        postcode: formRef.current?.getFieldValue('address.postcode'),
+      },
+    }).then(() => {
+      toast.success('Especialista cadastrado com sucesso !!', { autoClose: 3000 });
+      history.push('/specialist');
+      formRef.current?.clearField('address.state');
+      formRef.current?.reset();
+    })
+      .catch((e) => {
+        toast.error(`Especialista não cadastrado !! ${e}`, { autoClose: 3000 });
+      });
+  };
 
   const handleSubmit = useCallback(async (data: any) => {
     try {
@@ -96,32 +115,7 @@ const SpecialistRegistry: React.FC = () => {
         }
       }
     }
-    api.post('/specialist', {
-      name: formRef.current?.getFieldValue('name'),
-      email: formRef.current?.getFieldValue('email'),
-      registry: formRef.current?.getFieldValue('registry'),
-      phone: formRef.current?.getFieldValue('phone'),
-      cell: formRef.current?.getFieldValue('cell'),
-      specialties: getSpecialist,
-      address: {
-        city: formRef.current?.getFieldValue('address.city'),
-        state: formRef.current?.getFieldValue('address.state'),
-        street: formRef.current?.getFieldValue('address.street'),
-        district: formRef.current?.getFieldValue('address.district'),
-        numberOf: formRef.current?.getFieldValue('address.numberOf'),
-        postcode: formRef.current?.getFieldValue('address.postcode'),
-      },
-    }).then(() => {
-      toast.success('Especialista cadastrado com sucesso !!', { autoClose: 3000 });
-      history.push('/specialist');
-      formRef.current?.clearField('address.state');
-      formRef.current?.reset();
-    })
-      .catch((e) => {
-        toast.error(`Especialista não cadastrado !! ${e}`, { autoClose: 3000 });
-        // onClose: () => history.go(0),
-        // formRef.current?.reset();
-      });
+    handleCreate();
   }, []);
   async function handleSearch() {
     const postcode = formRef.current?.getFieldValue('address.postcode');
@@ -191,7 +185,6 @@ const SpecialistRegistry: React.FC = () => {
                   options={options}
                   styles={comboBoxStyles}
                   multiSelect
-                  onChange={(i, value) => specialties(value)}
                   placeholder="Ex: Pediatria"
                 />
                 <PrimaryButton type="submit" style={{ marginTop: 29.04 }}>
