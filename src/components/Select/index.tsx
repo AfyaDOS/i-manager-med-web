@@ -40,7 +40,7 @@ const Select: React.FC<Props> = ({ name, options, label }) => {
   };
 
   useEffect(() => {
-    refSelect.current = defaultValue || String(selectedItem?.key);
+    refSelect.current = defaultValue || selectedItem?.key as string | undefined;
   }, [selectedItem, defaultValue]);
 
   return (

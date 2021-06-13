@@ -9,3 +9,5 @@ export { MedRecordCreate as MedRecordCreateScreen } from './MedRecordCreate';
 export { MedRecordHistory as MedRecordHistoryScreen } from './MedRecordHistory';
 export { NotFound as NotFoundScreen } from './NotFound';
 export { Clients as ClientScreen } from './Clients';
+export { Services as ServicesScreen } from './Services';
+export { ServiceRegistry as ServiceRegistryScreen } from './ServiceRegistry';
