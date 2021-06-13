@@ -11,7 +11,7 @@ import { useApi } from '../../services/index';
 import { ISpecialist } from '../../commonTypes';
 import { FlatList, IColumns } from '../../components/FlatList';
 import { Dialog } from '../../utils';
-import { HeaderForm } from '../../components';
+import { HeaderForm } from '../../components/HeaderForm';
 
 const Specialist: React.FC = () => {
   const [specialists, setSpeclialist] = useState<ISpecialist[]>([]);
@@ -49,7 +49,7 @@ const Specialist: React.FC = () => {
         title: 'Deletar Especialista',
         subText: 'Tem certeza que deseja editar o Especialista?',
         positive: async () => {
-          api.delete(`/users/${itemSelect}`).then(() => {
+          api.delete(`/specialist/${itemSelect}`).then(() => {
             getSpecialists();
             toast.success('Especialista deletado com sucesso !!', { autoClose: 3000 });
           });
@@ -142,7 +142,11 @@ const Specialist: React.FC = () => {
     <Container>
       <Header />
       <Panel>
-        <HeaderForm src={specialistImg} label="Especialistas" description="" />
+        <HeaderForm
+          src={specialistImg}
+          label="Especialistas"
+          description=""
+        />
         <CommandBar items={commandBarBtn} />
         <FlatList
           columns={columns}

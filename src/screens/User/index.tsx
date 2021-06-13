@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { CommandBar, ICommandBarItemProps } from '@fluentui/react';
+import { CommandBar, ICommandBarItemProps, SearchBox } from '@fluentui/react';
 import { toast } from 'react-toastify';
-import { SearchBox } from '@fluentui/react/lib/SearchBox';
 import { useHistory } from 'react-router-dom';
 import { Header } from '../../components/Header';
 import { Footer } from '../../components/Footer';
@@ -11,7 +10,7 @@ import { useApi } from '../../services/index';
 import { IUser } from '../../commonTypes';
 import { FlatList, IColumns } from '../../components/FlatList';
 import { Dialog } from '../../utils';
-import { HeaderForm } from '../../components';
+import { HeaderForm } from '../../components/HeaderForm';
 
 const User: React.FC = () => {
   const [users, setUser] = useState<IUser[]>([]);
@@ -60,7 +59,6 @@ const User: React.FC = () => {
       toast.warning('Você deve selecionar o Usuário!!', { autoClose: 3000 });
     }
   }
-
   const columns: IColumns[] = [
     {
       fieldName: 'name',
@@ -118,7 +116,11 @@ const User: React.FC = () => {
     <Container>
       <Header />
       <Panel>
-        <HeaderForm src={userImg} label="Usuários" description="" />
+        <HeaderForm
+          src={userImg}
+          label="Usuários"
+          description=""
+        />
         <CommandBar items={commandBarBtn} />
         <FlatList
           columns={columns}
