@@ -3,18 +3,12 @@ import {
   CommandBar,
   ICommandBarItemProps,
   SearchBox,
-} from '@fluentui/react';
-import {
   Dropdown,
   IDropdownOption,
-} from '@fluentui/react/lib/Dropdown';
+} from '@fluentui/react';
 import { useHistory } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import {
-  Header,
-  Footer,
-  HeaderForm,
-} from '../../components';
+import { Header, Footer, HeaderForm } from '../../components';
 import { Container, Panel } from '../../styles';
 import medRecordImg from '../../assests/images/med-record.png';
 import { useApi } from '../../services/index';
@@ -23,26 +17,35 @@ import { FlatList, IColumns } from '../../components/FlatList';
 import { Dialog } from '../../utils';
 
 const MedRecordHistory: React.FC = () => {
-  const client = '';
-
   const api = useApi();
   const history = useHistory();
-  const [listRecords, setListRecords] = useState<IMedRecord[]>();
+  const [listRecords, setListRecords] = useState<IMedRecord[]>([]);
+  const [listRecordsDefault, setListRecordsDefault] = useState<IMedRecord[]>([]);
   const [selected, setSelected] = useState<string | undefined>();
   const [clients, setClients] = useState([]);
 
-  const loadMedRecords = useCallback(async () => {
+  const loadMedRecords = useCallback(async (item?: IDropdownOption) => {
     try {
-      const { data } = await api.get(`/medrecord/get/${client}`);
+      const { data } = await api.get(`/medrecord/get/${item?.key}`);
       if (data) {
-        setListRecords(data.map((item: IMedRecord) => ({
-          clientName: item.client.name,
-          specialistName: item.specialist.name,
-          description: item.description,
-          date: new Date(item.created_at).toLocaleDateString(),
-          time: new Date(item.created_at).toLocaleTimeString(),
-          id: item.id,
-        })));
+        setListRecordsDefault(
+          data.map((record: IMedRecord) => ({
+            id: record.id,
+            client: record.client.id,
+            specialist: record.specialist.id,
+            description: record.description,
+          })),
+        );
+        setListRecords(
+          data.map((record: IMedRecord) => ({
+            clientName: record.client.name,
+            specialistName: record.specialist.name,
+            description: record.description,
+            date: new Date(record.created_at).toLocaleDateString(),
+            time: new Date(record.created_at).toLocaleTimeString(),
+            id: record.id,
+          })),
+        );
       }
     } catch (error) {
       toast.error('Erro ao obter o prontuário');
@@ -51,7 +54,7 @@ const MedRecordHistory: React.FC = () => {
 
   const getClients = useCallback(async () => {
     try {
-      const { data } = await api.get('/clients/getall');
+      const { data } = await api.get('/clients');
 
       if (data) {
         setClients(
@@ -67,7 +70,6 @@ const MedRecordHistory: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    loadMedRecords();
     getClients();
   }, []);
 
@@ -93,12 +95,23 @@ const MedRecordHistory: React.FC = () => {
   }
 
   function handleEdit() {
-    if (selected) {
+    try {
+      if (!selected) {
+        toast.warn('Você precisa selecionar um registro !!');
+        return;
+      }
+
       Dialog.show({
         title: 'Edição de dados',
         subText: 'Tem certeza que deseja editar a descrição de consulta ?',
-        positive: () => history.push('/medrecord/create', { item: listRecords?.filter((record) => record.id === selected)[0] }),
+        positive: () => history.push('/medrecord/create', {
+          item: listRecordsDefault?.filter(
+            (record) => record.id === selected,
+          )[0],
+        }),
       });
+    } catch (error) {
+      toast.error('Um erro ocoreu ao tentar editar o registro');
     }
   }
 
@@ -108,10 +121,6 @@ const MedRecordHistory: React.FC = () => {
       placeholder="Filtrar por especialista, ex: nome"
       onSearch={(newValue) => console.log(`value is ${newValue}`)}
     />
-  );
-
-  const viewDescription = () => (
-    history.push('/medrecord/create', { item: listRecords?.filter((record) => record.id === selected)[0] })
   );
 
   const commandBarBtn: ICommandBarItemProps[] = [
@@ -153,7 +162,6 @@ const MedRecordHistory: React.FC = () => {
         iconName: 'EntryView',
         styles: { root: { color: 'blue' } },
       },
-      onClick: viewDescription,
     },
   ];
 
@@ -196,8 +204,13 @@ const MedRecordHistory: React.FC = () => {
     <Container>
       <Header />
       <Panel>
-        <HeaderForm src={medRecordImg} label="Prontuário" description="Para incluir uma descrição de consulta no prontuário preencha os campos abaixo." />
+        <HeaderForm
+          src={medRecordImg}
+          label="Prontuário"
+          description="Para incluir uma descrição de consulta no prontuário preencha os campos abaixo."
+        />
         <Dropdown
+          onChange={(_, item) => loadMedRecords(item)}
           label="Selecione um paciente para ver seu prontuário!"
           options={options}
         />
