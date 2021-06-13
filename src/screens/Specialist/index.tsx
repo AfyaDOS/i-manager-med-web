@@ -39,14 +39,20 @@ const Specialist: React.FC = () => {
   function handleEdit() {
     if (specialists.filter((specialis) => specialis.id === itemSelect)[0]) {
       history.push('/specialist/registry', { item: specialists.filter((specialis) => specialis.id === itemSelect)[0] });
+    } else {
+      toast.warning('Você deve selecionar o Especialista !!', { autoClose: 3000 });
     }
   }
 
   function handleDelete() {
-    api.delete(`/specialist/${itemSelect}`).then(() => {
-      toast.success('Especialista deletado com sucesso !!', { autoClose: 1000 });
-      history.go(0);
-    });
+    if (specialists.filter((specialis) => specialis.id === itemSelect)[0]) {
+      api.delete(`/specialist/${itemSelect}`).then(() => {
+        getSpecialists();
+        toast.success('Especialista deletado com sucesso !!', { autoClose: 3000 });
+      });
+    } else {
+      toast.warning('Você deve selecionar o Especialista !!', { autoClose: 3000 });
+    }
   }
   const searchBoxStyles: Partial<ISearchBoxStyles> = { root: { width: 200, marginTop: 10 } };
 
