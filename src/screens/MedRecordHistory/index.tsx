@@ -1,4 +1,6 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, {
+  useEffect, useState, useCallback, useRef,
+} from 'react';
 import {
   CommandBar,
   ICommandBarItemProps,
@@ -8,26 +10,32 @@ import {
 } from '@fluentui/react';
 import { useHistory } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { Header, Footer, HeaderForm } from '../../components';
+import {
+  Header, Footer, HeaderForm, ModalPreview,
+} from '../../components';
 import { Container, Panel } from '../../styles';
 import medRecordImg from '../../assests/images/med-record.png';
 import { useApi } from '../../services/index';
 import { IMedRecord, IClient } from '../../commonTypes/index';
 import { FlatList, IColumns } from '../../components/FlatList';
 import { Dialog } from '../../utils';
+import { HandleModal } from '../../components/ModalPreview';
 
 const MedRecordHistory: React.FC = () => {
   const api = useApi();
   const history = useHistory();
+  const [records, setRecords] = useState<IMedRecord[]>([]);
   const [listRecords, setListRecords] = useState<IMedRecord[]>([]);
   const [listRecordsDefault, setListRecordsDefault] = useState<IMedRecord[]>([]);
   const [selected, setSelected] = useState<string | undefined>();
   const [clients, setClients] = useState([]);
+  const refModal = useRef<HandleModal>(null);
 
   const loadMedRecords = useCallback(async (item?: IDropdownOption) => {
     try {
       const { data } = await api.get(`/medrecord/get/${item?.key}`);
       if (data) {
+        setRecords(data);
         setListRecordsDefault(
           data.map((record: IMedRecord) => ({
             id: record.id,
@@ -162,6 +170,7 @@ const MedRecordHistory: React.FC = () => {
         iconName: 'EntryView',
         styles: { root: { color: 'blue' } },
       },
+      onClick: () => refModal.current?.show(records.filter((record) => record.id === selected)[0]),
     },
   ];
 
@@ -222,6 +231,7 @@ const MedRecordHistory: React.FC = () => {
         />
       </Panel>
       <Footer />
+      <ModalPreview ref={refModal} />
     </Container>
   );
 };

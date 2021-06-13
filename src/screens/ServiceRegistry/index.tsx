@@ -107,11 +107,27 @@ const ServiceRegistry: React.FC = () => {
         client: Yup.string().required('O cliente é obrigatório !!'),
         specialist: Yup.string().required('O especialista é obrigatório !!'),
         serviceState: Yup.string().required('O especialista é obrigatório !!'),
-        scheduleDate: Yup.string().required('A data de agendamento é obrigatória !!'),
-        scheduleTime: Yup.string().required('A hora de agendamento é obrigatória !!'),
+        scheduleDate: Yup.string().required(
+          'A data de agendamento é obrigatória !!',
+        ),
+        scheduleTime: Yup.string().required(
+          'A hora de agendamento é obrigatória !!',
+        ),
       });
 
-      console.log(data);
+      const service = {
+        client: data.client,
+        specialist: data.specilist,
+        scheduleDate: new Date(
+          data.scheduleDate.getFullYear(),
+          data.scheduleDate.getMonth(),
+          data.scheduleDate.getDate(),
+          data.scheduleTime.split(':')[0],
+          data.scheduleTime.split(':')[1],
+        ),
+      };
+
+      console.log(service);
 
       await schema.validate(data, { abortEarly: false });
 
@@ -169,15 +185,19 @@ const ServiceRegistry: React.FC = () => {
                 name="scheduleDate"
                 label="Data da consulta:"
               />
-              <Input name="scheduleTime" label="Hora da consulta:" type="time" />
-              {state?.item && (
-              <UnformDatePicker
-                formatDate={(date) => (date ? date.toLocaleDateString('pt-BR') : '')}
-                minDate={new Date()}
-                strings={DayPickerStrings}
-                name="serviceDate"
-                label="Data do atendimento:"
+              <Input
+                name="scheduleTime"
+                label="Hora da consulta:"
+                type="time"
               />
+              {state?.item && (
+                <UnformDatePicker
+                  formatDate={(date) => (date ? date.toLocaleDateString('pt-BR') : '')}
+                  minDate={new Date()}
+                  strings={DayPickerStrings}
+                  name="serviceDate"
+                  label="Data do atendimento:"
+                />
               )}
             </Column>
             <PrimaryButton style={{ marginTop: 43 }} type="submit">
