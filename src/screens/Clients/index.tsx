@@ -11,13 +11,14 @@ import { Footer } from '../../components/Footer';
 import { Container, Panel } from '../../styles';
 import specialistImg from '../../assests/images/specialist.png';
 import { useApi } from '../../services/index';
-import { ISpecialist } from '../../commonTypes';
+import { IClient } from '../../commonTypes';
 import { FlatList, IColumns } from '../../components/FlatList';
 import { Dialog } from '../../utils';
 import { HeaderForm } from '../../components';
 
 const Clients: React.FC = () => {
-  const [clients, setClients] = useState<ISpecialist[]>();
+  const [clients, setClients] = useState<IClient[]>();
+  const [backupClients, setBackupClients] = useState<IClient[]>([]);
   const api = useApi();
   const history = useHistory();
   const [selected, setSelected] = useState<string | undefined>();
@@ -26,12 +27,16 @@ const Clients: React.FC = () => {
     try {
       const { data } = await api.get('/clients');
 
-      if (data) setClients(data);
+      if (data) {
+        setClients(data);
+        setBackupClients(data);
+      }
     } catch (error) {
-      console.log(error);
       toast.error('Erro ao obter a lista de pacientes');
     }
   }, []);
+
+  console.log(backupClients);
 
   useEffect(() => {
     getClients();
@@ -91,11 +96,22 @@ const Clients: React.FC = () => {
     }
   }
 
+  function handleFilter(text?: string) {
+    setClients(backupClients.filter((client) => {
+      if (client.name.toLowerCase().includes(String(text?.toLowerCase()))) {
+        return true;
+      }
+      return false;
+    }));
+
+    if (text === '') setClients(backupClients);
+  }
+
   const renderSearch = () => (
     <SearchBox
       styles={{ root: { minWidth: 300, width: 300 } }}
       placeholder="Filtrar pacientes, ex: cpf, nome"
-      onSearch={(newValue) => console.log(`value is ${newValue}`)}
+      onChange={(_, text) => handleFilter(text)}
     />
   );
 
