@@ -59,14 +59,6 @@ const User: React.FC = () => {
       toast.warning('Você deve selecionar o Usuário!!', { autoClose: 3000 });
     }
   }
-
-  const renderSearch = () => (
-    <SearchBox
-      styles={{ root: { minWidth: 300, width: 300 } }}
-      placeholder="Filtrar pacientes, ex: cpf, nome"
-      onSearch={(newValue) => console.log(`value is ${newValue}`)}
-    />
-  );
   const columns: IColumns[] = [
     {
       fieldName: 'name',
@@ -81,6 +73,15 @@ const User: React.FC = () => {
       maxWidth: 360,
     },
   ];
+
+  const renderSearch = () => (
+    <SearchBox
+      styles={{ root: { minWidth: 300, width: 300 } }}
+      placeholder="Filtrar especialistas, ex: registro, nome"
+      onSearch={(newValue) => console.log(`value is ${newValue}`)}
+    />
+  );
+
   const commandBarBtn: ICommandBarItemProps[] = [
     {
       key: 'search',

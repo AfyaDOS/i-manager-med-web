@@ -25,10 +25,7 @@ import specialist from '../../assests/images/specialist.png';
 import { Header } from '../../components/Header';
 import { Footer } from '../../components/Footer';
 import { ISpecialist } from '../../commonTypes';
-import {
-  Row,
-  Column,
-} from './styles';
+import { Row, Column } from './styles';
 import { Container, Panel } from '../../styles';
 import { setData } from '../../utils';
 
