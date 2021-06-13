@@ -13,6 +13,7 @@ import specialistImg from '../../assests/images/specialist.png';
 import { useApi } from '../../services/index';
 import { ISpecialist } from '../../commonTypes';
 import { FlatList, IColumns } from '../../components/FlatList';
+import { Dialog } from '../../utils';
 
 const Specialist: React.FC = () => {
   const [specialists, setSpeclialist] = useState<ISpecialist[]>([]);
@@ -46,9 +47,15 @@ const Specialist: React.FC = () => {
 
   function handleDelete() {
     if (specialists.filter((specialis) => specialis.id === itemSelect)[0]) {
-      api.delete(`/specialist/${itemSelect}`).then(() => {
-        getSpecialists();
-        toast.success('Especialista deletado com sucesso !!', { autoClose: 3000 });
+      Dialog.show({
+        title: 'Deletar Especialista',
+        subText: 'Tem certeza que deseja editar o Especialista?',
+        positive: async () => {
+          api.delete(`/users/${itemSelect}`).then(() => {
+            getSpecialists();
+            toast.success('Especialista deletado com sucesso !!', { autoClose: 3000 });
+          });
+        },
       });
     } else {
       toast.warning('Você deve selecionar o Especialista !!', { autoClose: 3000 });

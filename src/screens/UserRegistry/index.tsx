@@ -61,20 +61,13 @@ const UserRegistry: React.FC = () => {
         }
       }
     }
-    api.post('/users', {
-      name: formRef.current?.getFieldValue('name'),
-      email: formRef.current?.getFieldValue('email'),
-      password: formRef.current?.getFieldValue('password'),
-
-    }).then(() => {
+    api.post('/users', { ...data }).then(() => {
       toast.success('Usuário cadastrado com sucesso !!', { autoClose: 3000 });
       history.push('/user');
       formRef.current?.reset();
     })
       .catch((e) => {
         toast.error(`Usuário não cadastrado !! ${e}`, { autoClose: 3000 });
-        // onClose: () => history.go(0),
-        // formRef.current?.reset();
       });
   }, []);
 
@@ -97,9 +90,9 @@ const UserRegistry: React.FC = () => {
           </View>
           <Row>
             <Column style={{ justifyContent: 'flex-start' }}>
-              <Input label="Nome completo:" name="name" placeholder="Ex: Marcelo" />
-              <Input label="Email:" name="email" placeholder="Ex: marcelo@teste.com" />
-              <Input label="Senha:" name="password" placeholder="Ex: ***" />
+              <Input label="Nome completo:" type="text" name="name" placeholder="Ex: Marcelo" />
+              <Input label="Email:" name="email" type="email" placeholder="Ex: marcelo@teste.com" />
+              <Input label="Senha:" name="password" type="password" placeholder="Ex: ***" />
               <PrimaryButton type="submit" style={{ marginTop: 29.04 }}>
                 Cadastrar
               </PrimaryButton>

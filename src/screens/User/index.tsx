@@ -13,6 +13,7 @@ import userImg from '../../assests/images/user.png';
 import { useApi } from '../../services/index';
 import { IUser } from '../../commonTypes';
 import { FlatList, IColumns } from '../../components/FlatList';
+import { Dialog } from '../../utils';
 
 const User: React.FC = () => {
   const [users, setUser] = useState<IUser[]>([]);
@@ -47,9 +48,15 @@ const User: React.FC = () => {
 
   function handleDelete() {
     if (users.filter((specialis) => specialis.id === itemSelect)[0]) {
-      api.delete(`/users/${itemSelect}`).then(() => {
-        getUsers();
-        toast.success('Usuário deletado com sucesso !!', { autoClose: 3000 });
+      Dialog.show({
+        title: 'Deletar Usuário',
+        subText: 'Tem certeza que deseja editar o usuário?',
+        positive: async () => {
+          api.delete(`/users/${itemSelect}`).then(() => {
+            getUsers();
+            toast.success('Usuário deletado com sucesso !!', { autoClose: 3000 });
+          });
+        },
       });
     } else {
       toast.warning('Você deve selecionar o Usuário!!', { autoClose: 3000 });
