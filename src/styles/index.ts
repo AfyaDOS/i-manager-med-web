@@ -35,5 +35,16 @@ export const Column = styled.div`
     display: flex;
     flex-direction: column;
     height: 100%;
-    justify-content: space-evenly;
+`;
+
+interface PropsGrid{
+    gap?: number;
+    templateColumns?: string;
+}
+
+export const Grid = styled.div<PropsGrid>`
+    display: grid;
+    gap: ${(props) => `${props.gap}px`};
+    grid-template-columns: ${(props) => props.templateColumns};
+    align-items: flex-end;
 `;

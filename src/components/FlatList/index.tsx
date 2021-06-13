@@ -8,6 +8,7 @@ import {
 } from '@fluentui/react';
 import React, { useEffect, useState } from 'react';
 import { View } from '../../styles';
+import { masked } from '../../utils';
 
 import styles from './styles';
 
@@ -15,6 +16,7 @@ export interface IColumns {
   key: string;
   name: string;
   fieldName: string;
+  mask?: string;
   minWidth?: number;
   maxWidth: number;
   isArray?: {
@@ -89,7 +91,9 @@ const FlatList: React.FC<Props> = ({
                 <Stack.Item tokens={{ padding: 10 }}>
                   <Check checked={checked === item.id} />
                 </Stack.Item>
-                {columns.map(({ maxWidth, fieldName, isArray }) => (
+                {columns.map(({
+                  maxWidth, fieldName, isArray, mask,
+                }) => (
                   <Stack.Item
                     key={fieldName}
                     style={{ maxWidth }}
@@ -98,7 +102,7 @@ const FlatList: React.FC<Props> = ({
                   >
                     {!isArray ? (
                       <Text className={mergedStyles.text}>
-                        {item[fieldName]}
+                        {mask ? masked(mask, item[fieldName]) : item[fieldName]}
                       </Text>
                     ) : (
                       <Text>

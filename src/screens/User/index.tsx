@@ -1,19 +1,16 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import {
-  CommandBar, ICommandBarItemProps, Image, Text,
-} from '@fluentui/react';
+import { CommandBar, ICommandBarItemProps, SearchBox } from '@fluentui/react';
 import { toast } from 'react-toastify';
-import { Icon, FontIcon } from '@fluentui/react/lib/Icon';
-import { SearchBox, ISearchBoxStyles } from '@fluentui/react/lib/SearchBox';
 import { useHistory } from 'react-router-dom';
 import { Header } from '../../components/Header';
 import { Footer } from '../../components/Footer';
-import { Container, Panel, View } from '../../styles';
+import { Container, Panel } from '../../styles';
 import userImg from '../../assests/images/user.png';
 import { useApi } from '../../services/index';
 import { IUser } from '../../commonTypes';
 import { FlatList, IColumns } from '../../components/FlatList';
 import { Dialog } from '../../utils';
+import { HeaderForm } from '../../components/HeaderForm';
 
 const User: React.FC = () => {
   const [users, setUser] = useState<IUser[]>([]);
@@ -62,8 +59,6 @@ const User: React.FC = () => {
       toast.warning('Você deve selecionar o Usuário!!', { autoClose: 3000 });
     }
   }
-  const searchBoxStyles: Partial<ISearchBoxStyles> = { root: { width: 200, marginTop: 10 } };
-
   const columns: IColumns[] = [
     {
       fieldName: 'name',
@@ -78,7 +73,20 @@ const User: React.FC = () => {
       maxWidth: 360,
     },
   ];
+
+  const renderSearch = () => (
+    <SearchBox
+      styles={{ root: { minWidth: 300, width: 300 } }}
+      placeholder="Filtrar especialistas, ex: registro, nome"
+      onSearch={(newValue) => console.log(`value is ${newValue}`)}
+    />
+  );
+
   const commandBarBtn: ICommandBarItemProps[] = [
+    {
+      key: 'search',
+      onRenderIcon: renderSearch,
+    },
     {
       key: 'novo',
       text: 'Adicionar',
@@ -108,31 +116,11 @@ const User: React.FC = () => {
     <Container>
       <Header />
       <Panel>
-        <Icon iconName="OpenEnrollmentIcon" />
-        <FontIcon
-          aria-label="OpenEnrollmentIcon"
-          iconName="OpenEnrollmentIcon"
+        <HeaderForm
+          src={userImg}
+          label="Usuários"
+          description=""
         />
-        <View>
-          <View style={{ flexDirection: 'row' }}>
-            <Image src={userImg} width={60} />
-            <View style={{ marginLeft: 20 }}>
-              <Text variant="xxLarge">Usuários</Text>
-            </View>
-          </View>
-          <SearchBox
-            styles={searchBoxStyles}
-            placeholder="Buscar"
-            onEscape={(ev) => {
-              console.log(ev);
-            }}
-            onClear={(ev) => {
-              console.log(ev);
-            }}
-            onChange={(_, newValue) => console.log(`'SearchBox onChange fired: ' ${newValue}`)}
-            onSearch={(newValue) => console.log(`'SearchBox onSearch fired: ' ${newValue}`)}
-          />
-        </View>
         <CommandBar items={commandBarBtn} />
         <FlatList
           columns={columns}

@@ -1,19 +1,17 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import {
-  CommandBar, ICommandBarItemProps, Image, Text,
-} from '@fluentui/react';
+import { CommandBar, ICommandBarItemProps } from '@fluentui/react';
 import { toast } from 'react-toastify';
-import { Icon, FontIcon } from '@fluentui/react/lib/Icon';
-import { SearchBox, ISearchBoxStyles } from '@fluentui/react/lib/SearchBox';
+import { SearchBox } from '@fluentui/react/lib/SearchBox';
 import { useHistory } from 'react-router-dom';
 import { Header } from '../../components/Header';
 import { Footer } from '../../components/Footer';
-import { Container, Panel, View } from '../../styles';
+import { Container, Panel } from '../../styles';
 import specialistImg from '../../assests/images/specialist.png';
 import { useApi } from '../../services/index';
 import { ISpecialist } from '../../commonTypes';
 import { FlatList, IColumns } from '../../components/FlatList';
 import { Dialog } from '../../utils';
+import { HeaderForm } from '../../components/HeaderForm';
 
 const Specialist: React.FC = () => {
   const [specialists, setSpeclialist] = useState<ISpecialist[]>([]);
@@ -51,7 +49,7 @@ const Specialist: React.FC = () => {
         title: 'Deletar Especialista',
         subText: 'Tem certeza que deseja editar o Especialista?',
         positive: async () => {
-          api.delete(`/users/${itemSelect}`).then(() => {
+          api.delete(`/specialist/${itemSelect}`).then(() => {
             getSpecialists();
             toast.success('Especialista deletado com sucesso !!', { autoClose: 3000 });
           });
@@ -61,7 +59,6 @@ const Specialist: React.FC = () => {
       toast.warning('Você deve selecionar o Especialista !!', { autoClose: 3000 });
     }
   }
-  const searchBoxStyles: Partial<ISearchBoxStyles> = { root: { width: 200, marginTop: 10 } };
 
   const columns: IColumns[] = [
     {
@@ -102,7 +99,19 @@ const Specialist: React.FC = () => {
       maxWidth: 120,
     },
   ];
+
+  const renderSearch = () => (
+    <SearchBox
+      styles={{ root: { minWidth: 300, width: 300 } }}
+      placeholder="Filtrar especialistas, ex: registro, nome"
+      onSearch={(newValue) => console.log(`value is ${newValue}`)}
+    />
+  );
   const commandBarBtn: ICommandBarItemProps[] = [
+    {
+      key: 'search',
+      onRenderIcon: renderSearch,
+    },
     {
       key: 'novo',
       text: 'Adicionar',
@@ -128,35 +137,16 @@ const Specialist: React.FC = () => {
       onClick: handleDelete,
     },
   ];
+
   return (
     <Container>
       <Header />
       <Panel>
-        <Icon iconName="OpenEnrollmentIcon" />
-        <FontIcon
-          aria-label="OpenEnrollmentIcon"
-          iconName="OpenEnrollmentIcon"
+        <HeaderForm
+          src={specialistImg}
+          label="Especialistas"
+          description=""
         />
-        <View>
-          <View style={{ flexDirection: 'row' }}>
-            <Image src={specialistImg} width={60} />
-            <View style={{ marginLeft: 20 }}>
-              <Text variant="xxLarge">Especialistas</Text>
-            </View>
-          </View>
-          <SearchBox
-            styles={searchBoxStyles}
-            placeholder="Buscar"
-            onEscape={(ev) => {
-              console.log(ev);
-            }}
-            onClear={(ev) => {
-              console.log(ev);
-            }}
-            onChange={(_, newValue) => console.log(`'SearchBox onChange fired: ' ${newValue}`)}
-            onSearch={(newValue) => console.log(`'SearchBox onSearch fired: ' ${newValue}`)}
-          />
-        </View>
         <CommandBar items={commandBarBtn} />
         <FlatList
           columns={columns}

@@ -17,24 +17,6 @@ const Input: React.FC<Props> = ({
   const [inputValue, setInputValue] = useState<string | undefined>();
   const inputRef = useRef<string | undefined>();
 
-  useEffect(() => {
-    registerField({
-      name: fieldName,
-      ref: inputRef,
-      getValue: (ref) => (numeric ? ref.current?.replace(/\D/g, '') : ref.current),
-      setValue: (ref, text: string | undefined) => {
-        setInputValue(text);
-      },
-      clearValue: () => {
-        setInputValue(undefined);
-      },
-    });
-  }, [inputValue, fieldName, registerField]);
-
-  useEffect(() => {
-    inputRef.current = inputValue;
-  }, [inputValue]);
-
   function handleChange(text?: string) {
     if (mask && text) {
       const maskArray = mask.split('');
@@ -62,10 +44,29 @@ const Input: React.FC<Props> = ({
     }
   }
 
+  useEffect(() => {
+    registerField({
+      name: fieldName,
+      ref: inputRef,
+      getValue: (ref) => (numeric ? ref.current?.replace(/\D/g, '') : ref.current),
+      setValue: (ref, text: string | undefined) => {
+        handleChange(text);
+      },
+      clearValue: () => {
+        setInputValue(undefined);
+      },
+    });
+  }, [inputValue, fieldName, registerField]);
+
+  useEffect(() => {
+    inputRef.current = inputValue;
+  }, [inputValue]);
+
   return (
     <TextField
       {...rest}
       label={label}
+      styles={{ root: { marginTop: '1em' } }}
       value={inputValue}
       onChange={(_, text) => handleChange(text)}
       onFocus={clearError}

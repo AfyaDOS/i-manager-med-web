@@ -168,3 +168,24 @@ export function setErrors(ref: any, err: any): void {
     }
   }
 }
+
+export function masked(maskOf: string, text: string): string {
+  const maskArray = maskOf.split('');
+  const maskedArray: string[] = [];
+  const value = text.replace(/\D/g, '');
+  let index = 0;
+
+  const valueArray = value.split('');
+
+  maskArray.forEach((v, i) => {
+    if (v === '$') {
+      maskedArray[i] = valueArray[index] ?? '';
+      index += 1;
+    } else {
+      maskedArray[i] = valueArray[index] ? v : '';
+    }
+  });
+
+  const valueMasked = maskedArray.join('');
+  return valueMasked;
+}

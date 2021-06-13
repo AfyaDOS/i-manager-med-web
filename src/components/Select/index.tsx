@@ -35,6 +35,7 @@ const Select: React.FC<Props> = ({ name, options, label }) => {
     event?: React.FormEvent<HTMLDivElement>,
     item?: IDropdownOption,
   ): void => {
+    setDefaultValue(undefined);
     setSelectedItem(item);
   };
 
@@ -52,6 +53,7 @@ const Select: React.FC<Props> = ({ name, options, label }) => {
             : undefined
       }
       onFocus={clearError}
+      styles={{ root: { marginTop: '1em' } }}
       onChange={onChange}
       label={label}
       errorMessage={error}

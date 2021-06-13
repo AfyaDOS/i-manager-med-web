@@ -3,18 +3,14 @@ import React, {
   useRef,
   useCallback,
 } from 'react';
-import {
-  Image,
-  PrimaryButton,
-  Text,
-} from '@fluentui/react';
+import { PrimaryButton } from '@fluentui/react';
 import * as Yup from 'yup';
 import { toast } from 'react-toastify';
 import { Form } from '@unform/web';
 import { useHistory, useLocation } from 'react-router-dom';
 import { FormHandles } from '@unform/core';
 import { useApi } from '../../services';
-import { Input } from '../../components';
+import { HeaderForm, Input } from '../../components';
 import specialist from '../../assests/images/user.png';
 import { Header } from '../../components/Header';
 import { Footer } from '../../components/Footer';
@@ -23,7 +19,7 @@ import {
   Row,
   Column,
 } from './styles';
-import { Container, Panel, View } from '../../styles';
+import { Container, Panel } from '../../styles';
 import { setData } from '../../utils';
 
 interface ILocation {
@@ -76,18 +72,12 @@ const UserRegistry: React.FC = () => {
       <Header />
       <Panel>
         <Form ref={formRef} onSubmit={handleSubmit}>
-          <View>
-            <View style={{ flexDirection: 'row' }}>
-              <Image src={specialist} width={60} />
-              <View style={{ marginLeft: 20 }}>
-                <Text variant="xxLarge">Cadastro de Especialista</Text>
-                <Text>
-                  Para cadastrar, preencha os campos abaixo com os dados do
-                  especialista.
-                </Text>
-              </View>
-            </View>
-          </View>
+          <HeaderForm
+            src={specialist}
+            label="Usuários"
+            description="Para cadastrar, preencha os campos abaixo com os dados do
+                  especialista."
+          />
           <Row>
             <Column style={{ justifyContent: 'flex-start' }}>
               <Input label="Nome completo:" type="text" name="name" placeholder="Ex: Marcelo" />
