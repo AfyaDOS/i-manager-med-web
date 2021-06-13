@@ -13,6 +13,7 @@ import specialistImg from '../../assests/images/specialist.png';
 import { useApi } from '../../services/index';
 import { ISpecialist } from '../../commonTypes';
 import { FlatList, IColumns } from '../../components/FlatList';
+import { Dialog } from '../../utils';
 
 const Specialist: React.FC = () => {
   const [specialists, setSpeclialist] = useState<ISpecialist[]>([]);
@@ -39,14 +40,26 @@ const Specialist: React.FC = () => {
   function handleEdit() {
     if (specialists.filter((specialis) => specialis.id === itemSelect)[0]) {
       history.push('/specialist/registry', { item: specialists.filter((specialis) => specialis.id === itemSelect)[0] });
+    } else {
+      toast.warning('Você deve selecionar o Especialista !!', { autoClose: 3000 });
     }
   }
 
   function handleDelete() {
-    api.delete(`/specialist/${itemSelect}`).then(() => {
-      toast.success('Especialista deletado com sucesso !!', { autoClose: 1000 });
-      history.go(0);
-    });
+    if (specialists.filter((specialis) => specialis.id === itemSelect)[0]) {
+      Dialog.show({
+        title: 'Deletar Especialista',
+        subText: 'Tem certeza que deseja editar o Especialista?',
+        positive: async () => {
+          api.delete(`/users/${itemSelect}`).then(() => {
+            getSpecialists();
+            toast.success('Especialista deletado com sucesso !!', { autoClose: 3000 });
+          });
+        },
+      });
+    } else {
+      toast.warning('Você deve selecionar o Especialista !!', { autoClose: 3000 });
+    }
   }
   const searchBoxStyles: Partial<ISearchBoxStyles> = { root: { width: 200, marginTop: 10 } };
 

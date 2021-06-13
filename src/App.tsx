@@ -6,6 +6,8 @@ import { ContextProvider } from './context/ContextProvider';
 import { GlobalStyles } from './styles/GlobalStyles';
 import { Routes } from './routes/index';
 import { theme } from './styles/theme';
+import { Dialog } from './components';
+import { refDialog } from './utils';
 
 const App: React.FC = () => (
   <ThemeProvider theme={theme}>
@@ -23,6 +25,7 @@ const App: React.FC = () => (
         draggable
         pauseOnHover
       />
+      <Dialog ref={refDialog} />
     </ContextProvider>
   </ThemeProvider>
 );

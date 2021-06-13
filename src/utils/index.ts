@@ -1,13 +1,25 @@
 /* eslint-disable no-unused-vars */
 import React, { createRef } from 'react';
 import * as Yup from 'yup';
+import { HandleDialog } from '../components/Dialog';
 import { IHandlePanel } from '../drawer';
+import { IShowDialog } from '../commonTypes';
 
 export const refPanel = createRef<IHandlePanel>();
 
 export function open(): void {
   refPanel.current?.open();
 }
+
+export const refDialog = createRef<HandleDialog>();
+
+class Dialog {
+  static show(options: IShowDialog): void {
+    refDialog.current?.show(options);
+  }
+}
+
+export { Dialog };
 
 export const states = [
   {

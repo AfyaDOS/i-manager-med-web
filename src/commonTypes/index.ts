@@ -77,3 +77,10 @@ export interface IUser{
     created_at: string;
     updated_at: string;
 }
+
+export interface IShowDialog {
+  title: string;
+  subText: string;
+  positive?: () => void;
+  negative?: () => void;
+}

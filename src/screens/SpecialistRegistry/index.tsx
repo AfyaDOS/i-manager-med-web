@@ -46,7 +46,6 @@ const SpecialistRegistry: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
   const [options, setOptions] = useState<IComboBoxOption[]>([]);
   const comboBoxRef = React.useRef<IComboBox>(null);
-
   useEffect(() => {
     setData(formRef, state?.item);
   }, [state?.item]);
@@ -56,20 +55,38 @@ const SpecialistRegistry: React.FC = () => {
       setOptions(res.data);
     });
   }, []);
-  const getSpecialist: any[] = [];
 
-  function specialties(value: any) {
-    if (value?.selected === true) {
-      getSpecialist.push(value);
-      console.log(getSpecialist);
+  async function handleSearch() {
+    const postcode = formRef.current?.getFieldValue('address.postcode');
+    try {
+      if (!postcode) return;
+      const { data } = await axios.get(`https://viacep.com.br/ws/${postcode}/json/`);
+      formRef.current?.setFieldValue('address.city', data.localidade);
+      formRef.current?.setFieldValue('address.street', data.logradouro);
+      formRef.current?.setFieldValue('address.district', data.bairro);
+      formRef.current?.setFieldValue('address.state', data.uf.toUpperCase());
+    } catch (error) {
+      console.log(error);
     }
   }
+
+  const handleCreate = (data: any) => {
+    api.post('/specialist', Object.assign(data, { specialties: comboBoxRef.current?.selectedOptions })).then(() => {
+      toast.success('Especialista cadastrado com sucesso !!', { autoClose: 3000 });
+      history.push('/specialist');
+      formRef.current?.clearField('address.state');
+      formRef.current?.reset();
+    })
+      .catch((e) => {
+        toast.error(`Especialista não cadastrado !! ${e}`, { autoClose: 3000 });
+      });
+  };
 
   const handleSubmit = useCallback(async (data: any) => {
     try {
       const schema = Yup.object().shape({
         name: Yup.string().required('O Nome é obrigatório !!'),
-        phone: Yup.number().required('Ao menos um contato é obrigatório !!'),
+        phone: Yup.string().required('Ao menos um contato é obrigatório !!'),
         registry: Yup.number().required('O Registro é obrigatório !!'),
         specialties: Yup.array().min(1).required('Você deve incluir ao menos 1 especialidade!!'),
         email: Yup.string().required('O Email é obrigatório !!'),
@@ -79,7 +96,7 @@ const SpecialistRegistry: React.FC = () => {
           street: Yup.string().required('O Endereço é obrigatório !!'),
           district: Yup.string().required('O Bairro é obrigatório !!'),
           numberOf: Yup.number(),
-          postcode: Yup.number().required('O CEP é obrigatório !!'),
+          postcode: Yup.string().required('O CEP é obrigatório !!'),
         }),
       });
       await schema.validate(data, { abortEarly: false });
@@ -96,46 +113,8 @@ const SpecialistRegistry: React.FC = () => {
         }
       }
     }
-    api.post('/specialist', {
-      name: formRef.current?.getFieldValue('name'),
-      email: formRef.current?.getFieldValue('email'),
-      registry: formRef.current?.getFieldValue('registry'),
-      phone: formRef.current?.getFieldValue('phone'),
-      cell: formRef.current?.getFieldValue('cell'),
-      specialties: getSpecialist,
-      address: {
-        city: formRef.current?.getFieldValue('address.city'),
-        state: formRef.current?.getFieldValue('address.state'),
-        street: formRef.current?.getFieldValue('address.street'),
-        district: formRef.current?.getFieldValue('address.district'),
-        numberOf: formRef.current?.getFieldValue('address.numberOf'),
-        postcode: formRef.current?.getFieldValue('address.postcode'),
-      },
-    }).then(() => {
-      toast.success('Especialista cadastrado com sucesso !!', { autoClose: 3000 });
-      history.push('/specialist');
-      formRef.current?.clearField('address.state');
-      formRef.current?.reset();
-    })
-      .catch((e) => {
-        toast.error(`Especialista não cadastrado !! ${e}`, { autoClose: 3000 });
-        // onClose: () => history.go(0),
-        // formRef.current?.reset();
-      });
+    handleCreate(data);
   }, []);
-  async function handleSearch() {
-    const postcode = formRef.current?.getFieldValue('address.postcode');
-    try {
-      if (!postcode) return;
-      const { data } = await axios.get(`https://viacep.com.br/ws/${postcode}/json/`);
-      formRef.current?.setFieldValue('address.city', data.localidade);
-      formRef.current?.setFieldValue('address.street', data.logradouro);
-      formRef.current?.setFieldValue('address.district', data.bairro);
-      formRef.current?.setFieldValue('address.state', data.uf.toUpperCase());
-    } catch (error) {
-      console.log(error);
-    }
-  }
 
   return (
     <Container>
@@ -157,7 +136,7 @@ const SpecialistRegistry: React.FC = () => {
           <Row>
             <Column style={{ justifyContent: 'flex-start' }}>
               <Input label="Nome completo:" name="name" placeholder="Ex: Marcelo" />
-              <Input label="Email:" name="email" placeholder="Ex: marcelo@teste.com" />
+              <Input label="Email:" name="email" type="email" placeholder="Ex: marcelo@teste.com" />
               <Scope path="address">
                 <Input onBlur={handleSearch} label="CEP:" name="postcode" placeholder="Ex: 88888-88" />
                 <Input label="Endereço:" name="street" placeholder="Ex: Rua/Av Marcelo" />
@@ -191,7 +170,6 @@ const SpecialistRegistry: React.FC = () => {
                   options={options}
                   styles={comboBoxStyles}
                   multiSelect
-                  onChange={(i, value) => specialties(value)}
                   placeholder="Ex: Pediatria"
                 />
                 <PrimaryButton type="submit" style={{ marginTop: 29.04 }}>

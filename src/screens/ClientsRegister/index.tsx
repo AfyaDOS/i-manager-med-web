@@ -6,18 +6,16 @@ import { FormHandles, Scope } from '@unform/core';
 import * as Yup from 'yup';
 import {
   IDropdownOption,
-  Image,
   PrimaryButton,
   Stack,
-  Text,
 } from '@fluentui/react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useHistory, useLocation } from 'react-router-dom';
-import { Input, Select } from '../../components';
+import { HeaderForm, Input, Select } from '../../components';
 import { Header } from '../../components/Header';
 import { Footer } from '../../components/Footer';
-import { Container, Panel, View } from '../../styles';
+import { Container, Panel } from '../../styles';
 import { Row, Column } from './styles';
 import imageHeader from '../../assests/images/patients.png';
 import { setErrors, states } from '../../utils';
@@ -53,7 +51,6 @@ const ClientsRegister: React.FC = () => {
         );
       }
     } catch (error) {
-      console.log(error);
       toast.error('Erro ao tentar se connectar com o servidor ');
     }
   }, []);
@@ -80,7 +77,8 @@ const ClientsRegister: React.FC = () => {
       const schema = Yup.object().shape({
         cpf: Yup.string()
           .min(11, 'CPF deve conter minimo de 11 digitos.')
-          .max(11, 'CPF deve conter maximo de 11 digitos.'),
+          .max(11, 'CPF deve conter maximo de 11 digitos.')
+          .required('O CPF é obrigatório !!'),
         name: Yup.string().required('O nome é obrigatório !!'),
         phone: Yup.string(),
         cellphone: Yup.string().required(
@@ -101,8 +99,6 @@ const ClientsRegister: React.FC = () => {
 
       await schema.validate(data, { abortEarly: false });
 
-      console.log(JSON.stringify(data));
-
       await api.post('/clients/register', { ...data });
 
       toast.success('Paciente adicionado com sucesso !!', {
@@ -110,7 +106,6 @@ const ClientsRegister: React.FC = () => {
         onClose: () => history.push('/client'),
       });
     } catch (error) {
-      console.log(error.message);
       setErrors(formRef, error);
     }
   }, []);
@@ -144,23 +139,12 @@ const ClientsRegister: React.FC = () => {
     <Container>
       <Header />
       <Panel>
-        <Form
-          style={{ height: 'calc(100% - 100px)' }}
-          ref={formRef}
-          onSubmit={handleSubmit}
-        >
-          <View>
-            <View style={{ flexDirection: 'row', marginTop: 20 }}>
-              <Image src={imageHeader} width={60} />
-              <View style={{ marginLeft: 20 }}>
-                <Text variant="xxLarge">Cadastro de Pacientes</Text>
-                <Text>
-                  Para cadastrar, preencha os campos abaixo com os dados do
-                  paciente.
-                </Text>
-              </View>
-            </View>
-          </View>
+        <HeaderForm
+          src={imageHeader}
+          label="Cadastro de Pacientes"
+          description="Para cadastrar, preencha os campos abaixo com os dados do paciente."
+        />
+        <Form style={{ flex: 1 }} ref={formRef} onSubmit={handleSubmit}>
           <Row>
             <Column>
               <Input numeric label="CPF:" name="cpf" mask="$$$.$$$.$$$-$$" />
@@ -205,7 +189,7 @@ const ClientsRegister: React.FC = () => {
                 name="cellphone"
                 mask="($$) $.$$$$-$$$$"
               />
-              <Input label="Email:" name="email" />
+              <Input label="Email:" name="email" type="email" />
               <Select
                 options={bloodTypes}
                 name="bloodtype"
@@ -213,7 +197,7 @@ const ClientsRegister: React.FC = () => {
               />
               <Select options={gendersType} name="gender" label="Sexo:" />
               <PrimaryButton style={{ marginTop: 30 }} type="submit">
-                enviar
+                ENVIAR
               </PrimaryButton>
             </Column>
           </Row>
