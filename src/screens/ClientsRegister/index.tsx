@@ -4,10 +4,7 @@ import React, {
 import { Form } from '@unform/web';
 import { FormHandles, Scope } from '@unform/core';
 import * as Yup from 'yup';
-import {
-  IDropdownOption,
-  PrimaryButton,
-} from '@fluentui/react';
+import { IDropdownOption, PrimaryButton } from '@fluentui/react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useHistory, useLocation } from 'react-router-dom';
@@ -18,7 +15,7 @@ import {
   Container, Grid, Panel, Row, Column,
 } from '../../styles';
 import imageHeader from '../../assests/images/patients.png';
-import { setErrors, states } from '../../utils';
+import { setData, setErrors, states } from '../../utils';
 import { IClient, IBloodType, EBloodTypes } from '../../commonTypes';
 import { useApi } from '../../services';
 
@@ -60,16 +57,7 @@ const ClientsRegister: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (formRef.current && state?.item) {
-      Object.entries(state.item).forEach(([key, value]) => {
-        if (typeof value === 'object') {
-          Object.entries(value).forEach(([subKey, subValue]) => {
-            formRef.current?.setFieldValue(`${key}.${subKey}`, subValue);
-          });
-        }
-        formRef.current?.setFieldValue(key, value);
-      });
-    }
+    setData(formRef, state?.item);
   }, [state?.item]);
 
   const handleSubmit = useCallback(async (data: any) => {
@@ -99,12 +87,23 @@ const ClientsRegister: React.FC = () => {
 
       await schema.validate(data, { abortEarly: false });
 
-      await api.post('/clients/register', { ...data });
+      if (state?.item) {
+        await api.put(`/clients/${state?.item.id}`, { ...data });
+      } else {
+        await api.post('/clients', { ...data });
+      }
 
-      toast.success('Paciente adicionado com sucesso !!', {
-        autoClose: 1500,
-        onClose: () => history.push('/client'),
-      });
+      toast.success(
+        `${
+          state?.item
+            ? 'Paciente atualizado com sucesso !!'
+            : 'Paciente adicionado com sucesso !!'
+        }`,
+        {
+          autoClose: 1500,
+          onClose: () => history.push('/client'),
+        },
+      );
     } catch (error) {
       setErrors(formRef, error);
     }
@@ -141,7 +140,9 @@ const ClientsRegister: React.FC = () => {
       <Panel>
         <HeaderForm
           src={imageHeader}
-          label="Cadastro de Pacientes"
+          label={
+            state?.item ? 'Atualização de Paciente' : 'Cadastro de Pacientes'
+          }
           description="Para cadastrar, preencha os campos abaixo com os dados do paciente."
         />
         <Form style={{ flex: 1 }} ref={formRef} onSubmit={handleSubmit}>
@@ -189,7 +190,7 @@ const ClientsRegister: React.FC = () => {
               />
               <Select options={gendersType} name="gender" label="Sexo:" />
               <PrimaryButton style={{ marginTop: 43 }} type="submit">
-                ENVIAR
+                {state?.item ? 'ATUALIZAR' : 'ENVIAR'}
               </PrimaryButton>
             </Column>
           </Row>

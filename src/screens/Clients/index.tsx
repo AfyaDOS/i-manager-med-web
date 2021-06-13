@@ -24,7 +24,7 @@ const Clients: React.FC = () => {
 
   const getClients = useCallback(async () => {
     try {
-      const { data } = await api.get('/clients/all');
+      const { data } = await api.get('/clients');
 
       if (data) setClients(data);
     } catch (error) {
@@ -46,12 +46,14 @@ const Clients: React.FC = () => {
     },
     {
       fieldName: 'cpf',
+      mask: '$$$.$$$.$$$-$$',
       key: 'cpf',
       name: 'CPF',
       maxWidth: 200,
     },
     {
       fieldName: 'phone',
+      mask: '($$) $.$$$$-$$$$',
       key: 'phone',
       name: 'Celular',
       maxWidth: 120,
