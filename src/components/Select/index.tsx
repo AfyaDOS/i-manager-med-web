@@ -7,9 +7,13 @@ interface Props {
   name: string;
   options: IDropdownOption[];
   label: string;
+  onChange: (event?: React.FormEvent<HTMLDivElement>,
+    item?: IDropdownOption) => void
 }
 
-const Select: React.FC<Props> = ({ name, options, label }) => {
+const Select: React.FC<Props> = ({
+  name, options, label, onChange,
+}) => {
   const {
     fieldName, registerField, error, clearError,
   } = useField(name);
@@ -31,10 +35,11 @@ const Select: React.FC<Props> = ({ name, options, label }) => {
     });
   }, [fieldName, registerField, defaultValue]);
 
-  const onChange = (
+  const onChangeValue = (
     event?: React.FormEvent<HTMLDivElement>,
     item?: IDropdownOption,
   ): void => {
+    onChange(event, item);
     setDefaultValue(undefined);
     setSelectedItem(item);
   };
@@ -54,7 +59,7 @@ const Select: React.FC<Props> = ({ name, options, label }) => {
       }
       onFocus={clearError}
       styles={{ root: { marginTop: '1em' } }}
-      onChange={onChange}
+      onChange={onChangeValue}
       label={label}
       errorMessage={error}
       options={options || []}
