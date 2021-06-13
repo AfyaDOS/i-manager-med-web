@@ -1,17 +1,20 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import {
-  CommandBar, ICommandBarItemProps, Image, Text,
+  CommandBar,
+  ICommandBarItemProps,
+  SearchBox,
 } from '@fluentui/react';
 import { toast } from 'react-toastify';
 import { useHistory } from 'react-router-dom';
 import { Header } from '../../components/Header';
 import { Footer } from '../../components/Footer';
-import { Container, Panel, View } from '../../styles';
+import { Container, Panel } from '../../styles';
 import specialistImg from '../../assests/images/specialist.png';
 import { useApi } from '../../services/index';
 import { ISpecialist } from '../../commonTypes';
 import { FlatList, IColumns } from '../../components/FlatList';
-import styles from './styles';
+import { Dialog } from '../../utils';
+import { HeaderForm } from '../../components';
 
 const Clients: React.FC = () => {
   const [clients, setClients] = useState<ISpecialist[]>();
@@ -25,7 +28,8 @@ const Clients: React.FC = () => {
 
       if (data) setClients(data);
     } catch (error) {
-      toast.error('Erro ao obter a lista de especialistas');
+      console.log(error);
+      toast.error('Erro ao obter a lista de pacientes');
     }
   }, []);
 
@@ -61,22 +65,43 @@ const Clients: React.FC = () => {
         return;
       }
 
-      await api.delete(`/clients/${selected}`);
+      Dialog.show({
+        title: 'Deletar paciente',
+        subText: 'Tem certeza que deseja o paciente ?',
+        positive: async () => {
+          await api.delete(`/clients/${selected}`);
 
-      getClients();
+          getClients();
+        },
+      });
     } catch (error) {
-      console.log(error);
       toast.error('Um erro ocoreu ao tentar deletar o paciente');
     }
   }
 
   function handleEdit() {
     if (selected) {
-      history.push('/client/registry', { item: clients?.filter((client) => client.id === selected)[0] });
+      Dialog.show({
+        title: 'Edição de dados',
+        subText: 'Tem certeza que deseja editar os dados do paciente ?',
+        positive: () => history.push('/client/registry', { item: clients?.filter((client) => client.id === selected)[0] }),
+      });
     }
   }
 
+  const renderSearch = () => (
+    <SearchBox
+      styles={{ root: { minWidth: 300, width: 300 } }}
+      placeholder="Filtrar pacientes, ex: cpf, nome"
+      onSearch={(newValue) => console.log(`value is ${newValue}`)}
+    />
+  );
+
   const commandBarBtn: ICommandBarItemProps[] = [
+    {
+      key: 'search',
+      onRenderIcon: renderSearch,
+    },
     {
       key: 'add',
       text: 'Adicionar',
@@ -109,19 +134,13 @@ const Clients: React.FC = () => {
     <Container>
       <Header />
       <Panel>
-        <View style={styles.boxHeader}>
-          <View style={{ flexDirection: 'row' }}>
-            <Image src={specialistImg} width={60} />
-            <View style={{ marginLeft: 20 }}>
-              <Text variant="xxLarge">Pacientes</Text>
-            </View>
-          </View>
-        </View>
+        <HeaderForm src={specialistImg} label="Pacientes" description="Para cadastrar um paciente preencha os campos abaixo." />
+
         <CommandBar items={commandBarBtn} />
         <FlatList
           columns={columns}
           data={clients}
-          setSelection={(id) => setSelected(id)}
+          setSelection={(id) => setSelected((prev) => (id === prev ? undefined : id))}
         />
       </Panel>
       <Footer />

@@ -81,8 +81,8 @@ const UserRegistry: React.FC = () => {
   return (
     <Container>
       <Header />
-      <Form ref={formRef} onSubmit={handleSubmit} style={{ height: 'calc(100vh - 100px)' }}>
-        <Panel>
+      <Panel>
+        <Form ref={formRef} onSubmit={handleSubmit}>
           <View>
             <View style={{ flexDirection: 'row' }}>
               <Image src={specialist} width={60} />
@@ -105,8 +105,9 @@ const UserRegistry: React.FC = () => {
               </PrimaryButton>
             </Column>
           </Row>
-        </Panel>
-      </Form>
+
+        </Form>
+      </Panel>
       <Footer />
     </Container>
 
