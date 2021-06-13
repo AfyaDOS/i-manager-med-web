@@ -134,8 +134,7 @@ const Clients: React.FC = () => {
     <Container>
       <Header />
       <Panel>
-        <HeaderForm src={specialistImg} label="Pacientes" description="Para cadastrar um paciente preencha os campos abaixo." />
-
+        <HeaderForm src={specialistImg} label="Pacientes" description="Aqui estão os registros dos pacientes cadastrados." />
         <CommandBar items={commandBarBtn} />
         <FlatList
           columns={columns}

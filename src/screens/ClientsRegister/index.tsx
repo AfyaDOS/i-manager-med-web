@@ -7,7 +7,6 @@ import * as Yup from 'yup';
 import {
   IDropdownOption,
   PrimaryButton,
-  Stack,
 } from '@fluentui/react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
@@ -15,8 +14,9 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { HeaderForm, Input, Select } from '../../components';
 import { Header } from '../../components/Header';
 import { Footer } from '../../components/Footer';
-import { Container, Panel } from '../../styles';
-import { Row, Column } from './styles';
+import {
+  Container, Grid, Panel, Row, Column,
+} from '../../styles';
 import imageHeader from '../../assests/images/patients.png';
 import { setErrors, states } from '../../utils';
 import { IClient, IBloodType, EBloodTypes } from '../../commonTypes';
@@ -157,22 +157,14 @@ const ClientsRegister: React.FC = () => {
                   name="postcode"
                   mask="$$.$$$-$$$"
                 />
-                <Stack horizontal tokens={{ childrenGap: 10 }}>
-                  <Stack.Item grow={10}>
-                    <Input label="Rua:" name="street" />
-                  </Stack.Item>
-                  <Stack.Item grow={2}>
-                    <Input label="Número:" name="numberOf" />
-                  </Stack.Item>
-                </Stack>
-                <Stack horizontal tokens={{ childrenGap: 10 }}>
-                  <Stack.Item grow={6}>
-                    <Input label="Cidade:" name="city" />
-                  </Stack.Item>
-                  <Stack.Item grow={6}>
-                    <Select options={states} name="state" label="Estado:" />
-                  </Stack.Item>
-                </Stack>
+                <Grid templateColumns="1fr 0.5fr" gap={10}>
+                  <Input label="Rua:" name="street" />
+                  <Input label="Número:" name="numberOf" />
+                </Grid>
+                <Grid templateColumns="1fr 0.5fr" gap={10}>
+                  <Input label="Cidade:" name="city" />
+                  <Select options={states} name="state" label="Estado:" />
+                </Grid>
                 <Input label="Bairro:" name="district" />
               </Scope>
             </Column>
@@ -196,7 +188,7 @@ const ClientsRegister: React.FC = () => {
                 label="Tipo Sanguíneo:"
               />
               <Select options={gendersType} name="gender" label="Sexo:" />
-              <PrimaryButton style={{ marginTop: 30 }} type="submit">
+              <PrimaryButton style={{ marginTop: 43 }} type="submit">
                 ENVIAR
               </PrimaryButton>
             </Column>
