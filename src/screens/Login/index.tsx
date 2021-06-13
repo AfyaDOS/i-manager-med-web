@@ -50,9 +50,9 @@ const Login: React.FC = () => {
       <Header />
       <View style={styles.boxContent}>
         <Image style={styles.imageDoctor} src={doctorImage} />
-        <Panel style={{ maxWidth: 650 }}>
+        <Panel style={{ maxWidth: '30%', marginLeft: 'auto' }}>
           <Form ref={formRef} onSubmit={handleLogin}>
-            <Image src={logoImage} />
+            <Image src={logoImage} width="100%" />
             <Text variant="xxLargePlus">Bem vindo de volta.</Text>
             <Text variant="large">
               Para manter-se conectado, faça login com seus dados de e-mail e

@@ -1,10 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Nav as FluentNav,
   INavStyles,
   INavLinkGroup,
+  INavLink,
 } from '@fluentui/react/lib/Nav';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
+import { open } from '../../utils';
 
 const navStyles: Partial<INavStyles> = {
   root: {
@@ -21,57 +23,33 @@ const navLinkGroups: INavLinkGroup[] = [
     links: [
       {
         name: 'Home',
-        url: 'http://example.com',
-        expandAriaLabel: 'Expand Home section',
-        collapseAriaLabel: 'Collapse Home section',
-        links: [
-          {
-            name: 'Activity',
-            url: 'http://msn.com',
-            key: 'key1',
-            target: '_blank',
-          },
-          {
-            name: 'MSN',
-            url: 'http://msn.com',
-            disabled: true,
-            key: 'key2',
-            target: '_blank',
-          },
-        ],
-        isExpanded: true,
+        url: '/',
+        key: '/',
+        iconProps: { iconName: 'Home' },
       },
       {
-        name: 'Documents',
-        url: 'http://example.com',
-        key: 'key3',
-        isExpanded: true,
-        target: '_blank',
+        name: 'Usuários',
+        url: 'user',
+        key: '/user',
+        iconProps: { iconName: 'Telemarketer' },
       },
       {
-        name: 'Pages',
-        url: 'http://msn.com',
-        key: 'key4',
-        target: '_blank',
+        name: 'Pacientes',
+        url: 'clients',
+        key: '/client',
+        iconProps: { iconName: 'Contact' },
       },
       {
-        name: 'Notebook',
-        url: 'http://msn.com',
-        key: 'key5',
-        disabled: true,
+        name: 'Especialistas',
+        url: 'specialists',
+        key: '/specialist',
+        iconProps: { iconName: 'Medical' },
       },
       {
-        name: 'Communication and Media',
-        url: 'http://msn.com',
-        key: 'key6',
-        target: '_blank',
-      },
-      {
-        name: 'News',
-        url: 'http://cnn.com',
-        icon: 'News',
-        key: 'key7',
-        target: '_blank',
+        name: 'Prontuarios',
+        url: 'history',
+        key: '/history',
+        iconProps: { iconName: 'DocumentSet' },
       },
     ],
   },
@@ -79,13 +57,23 @@ const navLinkGroups: INavLinkGroup[] = [
 
 const Nav: React.FC = () => {
   const history = useHistory();
+  const location = useLocation();
+  const [selectedkey, setSelectedKey] = useState('/');
 
   useEffect(() => {
-    console.log(history.location);
-  }, []);
+    setSelectedKey(location.pathname);
+  }, [location.state]);
+
+  function handleNavigate(e?: React.MouseEvent<HTMLElement, MouseEvent>, item?: INavLink) {
+    e?.preventDefault();
+    history.push(String(item?.key));
+    open();
+  }
+
   return (
     <FluentNav
-      selectedKey="key1"
+      selectedKey={selectedkey}
+      onLinkClick={(e, item) => handleNavigate(e, item)}
       ariaLabel="Nav basic example"
       styles={navStyles}
       groups={navLinkGroups}

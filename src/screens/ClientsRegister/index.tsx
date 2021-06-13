@@ -13,6 +13,7 @@ import {
 } from '@fluentui/react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { useHistory, useLocation } from 'react-router-dom';
 import { Input, Select } from '../../components';
 import { Header } from '../../components/Header';
 import { Footer } from '../../components/Footer';
@@ -20,36 +21,50 @@ import { Container, Panel, View } from '../../styles';
 import { Row, Column } from './styles';
 import imageHeader from '../../assests/images/patients.png';
 import { setErrors, states } from '../../utils';
+import { IClient, IBloodType, EBloodTypes } from '../../commonTypes';
+import { useApi } from '../../services';
 
-const bloodtype = [{
-  key: 'sdasdasdasd',
-  text: 'A+',
-}];
+interface ILocation {
+  item?: IClient;
+}
 
 const ClientsRegister: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
+  const { state } = useLocation<ILocation>();
+  const [bloodTypes, setBloodTypes] = useState<IDropdownOption[]>([]);
+  const api = useApi();
+  const history = useHistory();
   const [gendersType] = useState<IDropdownOption[]>([
     { key: '0', text: 'Masculino' },
     { key: '1', text: 'Feminino' },
     { key: '2', text: 'Outros' },
   ]);
 
-  useEffect(() => {
-    if (formRef.current) {
-      const data = {
-        cpf: '11111111111',
-        name: 'leonardo',
-        phone: '1111111111',
-        cellphone: '11111111111',
-        email: 'teste@teste.com',
-        bloodtype: 'sdasdasdasd',
-        gender: '0',
-        address: {
-          postcode: '17512270', street: 'Rua Bento de Abreu Filho', numberOf: '2221', city: 'Marília', state: 'sp', district: 'Jardim Santa Antonieta',
-        },
-      };
+  const getBloodTypes = useCallback(async () => {
+    try {
+      const { data } = await api.get('/bloodtype/all');
 
-      Object.entries(data).forEach(([key, value]) => {
+      if (data) {
+        setBloodTypes(
+          data.map((bloodtype: IBloodType) => ({
+            key: bloodtype.id,
+            text: EBloodTypes[Number(bloodtype.typeOf)],
+          })),
+        );
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error('Erro ao tentar se connectar com o servidor ');
+    }
+  }, []);
+
+  useEffect(() => {
+    getBloodTypes();
+  }, []);
+
+  useEffect(() => {
+    if (formRef.current && state?.item) {
+      Object.entries(state.item).forEach(([key, value]) => {
         if (typeof value === 'object') {
           Object.entries(value).forEach(([subKey, subValue]) => {
             formRef.current?.setFieldValue(`${key}.${subKey}`, subValue);
@@ -58,7 +73,7 @@ const ClientsRegister: React.FC = () => {
         formRef.current?.setFieldValue(key, value);
       });
     }
-  }, []);
+  }, [state?.item]);
 
   const handleSubmit = useCallback(async (data: any) => {
     try {
@@ -68,7 +83,9 @@ const ClientsRegister: React.FC = () => {
           .max(11, 'CPF deve conter maximo de 11 digitos.'),
         name: Yup.string().required('O nome é obrigatório !!'),
         phone: Yup.string(),
-        cellphone: Yup.string().required('Ao menos um contato é obrigatório !!'),
+        cellphone: Yup.string().required(
+          'Ao menos um contato é obrigatório !!',
+        ),
         bloodtype: Yup.string().required('Tipo sanguíneo é obrigatório !!'),
         email: Yup.string().required('O email é obrigatório !!'),
         gender: Yup.string().required('O genero é obrigatório'),
@@ -83,8 +100,18 @@ const ClientsRegister: React.FC = () => {
       });
 
       await schema.validate(data, { abortEarly: false });
-    } catch (err) {
-      setErrors(formRef, err);
+
+      console.log(JSON.stringify(data));
+
+      await api.post('/clients/register', { ...data });
+
+      toast.success('Paciente adicionado com sucesso !!', {
+        autoClose: 1500,
+        onClose: () => history.push('/client'),
+      });
+    } catch (error) {
+      console.log(error.message);
+      setErrors(formRef, error);
     }
   }, []);
 
@@ -136,12 +163,7 @@ const ClientsRegister: React.FC = () => {
           </View>
           <Row>
             <Column>
-              <Input
-                numeric
-                label="CPF:"
-                name="cpf"
-                mask="$$$.$$$.$$$-$$"
-              />
+              <Input numeric label="CPF:" name="cpf" mask="$$$.$$$.$$$-$$" />
               <Input label="Nome completo:" name="name" />
               <Scope path="address">
                 <Input
@@ -184,7 +206,11 @@ const ClientsRegister: React.FC = () => {
                 mask="($$) $.$$$$-$$$$"
               />
               <Input label="Email:" name="email" />
-              <Select options={bloodtype} name="bloodtype" label="Tipo Sanguíneo:" />
+              <Select
+                options={bloodTypes}
+                name="bloodtype"
+                label="Tipo Sanguíneo:"
+              />
               <Select options={gendersType} name="gender" label="Sexo:" />
               <PrimaryButton style={{ marginTop: 30 }} type="submit">
                 enviar

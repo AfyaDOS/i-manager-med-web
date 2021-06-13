@@ -15,10 +15,11 @@ import {
   Text,
 } from '@fluentui/react';
 import * as Yup from 'yup';
+import { toast } from 'react-toastify';
 import { Form } from '@unform/web';
+import { useHistory, useLocation } from 'react-router-dom';
 import { FormHandles, Scope } from '@unform/core';
 import axios from 'axios';
-import { useLocation } from 'react-router-dom';
 import { useApi } from '../../services';
 import { Input } from '../../components';
 import specialist from '../../assests/images/specialist.png';
@@ -41,6 +42,7 @@ const comboBoxStyles: Partial<IComboBoxStyles> = { root: { maxWidth: 800 } };
 const SpecialistRegistry: React.FC = () => {
   const { state } = useLocation<ILocation>();
   const api = useApi();
+  const history = useHistory();
   const formRef = useRef<FormHandles>(null);
   const [options, setOptions] = useState<IComboBoxOption[]>([]);
   const comboBoxRef = React.useRef<IComboBox>(null);
@@ -109,7 +111,17 @@ const SpecialistRegistry: React.FC = () => {
         numberOf: formRef.current?.getFieldValue('address.numberOf'),
         postcode: formRef.current?.getFieldValue('address.postcode'),
       },
-    }).then((resp) => console.log(resp)).catch((e) => console.log(e));
+    }).then(() => {
+      toast.success('Especialista cadastrado com sucesso !!', { autoClose: 3000 });
+      history.push('/specialist');
+      formRef.current?.clearField('address.state');
+      formRef.current?.reset();
+    })
+      .catch((e) => {
+        toast.error(`Especialista não cadastrado !! ${e}`, { autoClose: 3000 });
+        // onClose: () => history.go(0),
+        // formRef.current?.reset();
+      });
   }, []);
   async function handleSearch() {
     const postcode = formRef.current?.getFieldValue('address.postcode');
@@ -144,34 +156,34 @@ const SpecialistRegistry: React.FC = () => {
           </View>
           <Row>
             <Column style={{ justifyContent: 'flex-start' }}>
-              <Input label="Nome completo:" name="name" />
-              <Input label="Email:" name="email" />
+              <Input label="Nome completo:" name="name" placeholder="Ex: Marcelo" />
+              <Input label="Email:" name="email" placeholder="Ex: marcelo@teste.com" />
               <Scope path="address">
-                <Input onBlur={handleSearch} label="CEP:" name="postcode" />
-                <Input label="Endereço:" name="street" />
+                <Input onBlur={handleSearch} label="CEP:" name="postcode" placeholder="Ex: 88888-88" />
+                <Input label="Endereço:" name="street" placeholder="Ex: Rua/Av Marcelo" />
                 <Stack horizontal tokens={{ childrenGap: 20, padding: 0 }}>
                   <Stack.Item grow={10}>
-                    <Input label="Cidade:" name="city" />
+                    <Input label="Cidade:" name="city" placeholder="Ex: São Paulo" />
                   </Stack.Item>
                   <Stack.Item grow={2}>
-                    <Input label="Estado:" name="state" />
+                    <Input label="Estado:" name="state" placeholder="Ex: SP" />
                   </Stack.Item>
                 </Stack>
                 <Stack horizontal tokens={{ childrenGap: 20, padding: 0 }}>
                   <Stack.Item grow={10}>
-                    <Input label="Bairro:" name="district" />
+                    <Input label="Bairro:" name="district" placeholder="Ex: Butantã" />
                   </Stack.Item>
                   <Stack.Item grow={2}>
-                    <Input label="Número:" name="numberOf" />
+                    <Input label="Número:" name="numberOf" placeholder="Ex: 888" />
                   </Stack.Item>
                 </Stack>
               </Scope>
             </Column>
             <Column style={{ justifyContent: 'flex-start' }}>
               <Stack>
-                <Input label="Registro:" name="registry" />
-                <Input label="Telefone:" name="phone" />
-                <Input label="Celular:" name="phone" />
+                <Input label="Registro:" name="registry" placeholder="Ex: 88888-88" />
+                <Input label="Telefone:" name="phone" placeholder="Ex: (88) 88888-8888" />
+                <Input label="Celular:" name="cell" placeholder="Ex: (88) 8888-8888" />
                 <ComboBox
                   componentRef={comboBoxRef}
                   defaultSelectedKey="C"
@@ -180,6 +192,7 @@ const SpecialistRegistry: React.FC = () => {
                   styles={comboBoxStyles}
                   multiSelect
                   onChange={(i, value) => specialties(value)}
+                  placeholder="Ex: Pediatria"
                 />
                 <PrimaryButton type="submit" style={{ marginTop: 29.04 }}>
                   Cadastrar

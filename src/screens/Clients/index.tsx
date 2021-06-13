@@ -3,6 +3,7 @@ import {
   CommandBar, ICommandBarItemProps, Image, Text,
 } from '@fluentui/react';
 import { toast } from 'react-toastify';
+import { useHistory } from 'react-router-dom';
 import { Header } from '../../components/Header';
 import { Footer } from '../../components/Footer';
 import { Container, Panel, View } from '../../styles';
@@ -13,8 +14,24 @@ import { FlatList, IColumns } from '../../components/FlatList';
 import styles from './styles';
 
 const Clients: React.FC = () => {
-  const [specialists, setSpeclialist] = useState<ISpecialist[]>();
+  const [clients, setClients] = useState<ISpecialist[]>();
   const api = useApi();
+  const history = useHistory();
+  const [selected, setSelected] = useState<string | undefined>();
+
+  const getClients = useCallback(async () => {
+    try {
+      const { data } = await api.get('/clients/all');
+
+      if (data) setClients(data);
+    } catch (error) {
+      toast.error('Erro ao obter a lista de especialistas');
+    }
+  }, []);
+
+  useEffect(() => {
+    getClients();
+  }, []);
 
   const columns: IColumns[] = [
     {
@@ -36,7 +53,37 @@ const Clients: React.FC = () => {
       maxWidth: 120,
     },
   ];
+
+  async function handleDelete() {
+    try {
+      if (!selected) {
+        toast.warn('Você precisa selecionar um paciente !!');
+        return;
+      }
+
+      await api.delete(`/clients/${selected}`);
+
+      getClients();
+    } catch (error) {
+      console.log(error);
+      toast.error('Um erro ocoreu ao tentar deletar o paciente');
+    }
+  }
+
+  function handleEdit() {
+    if (selected) {
+      history.push('/client/registry', { item: clients?.filter((client) => client.id === selected)[0] });
+    }
+  }
+
   const commandBarBtn: ICommandBarItemProps[] = [
+    {
+      key: 'add',
+      text: 'Adicionar',
+      split: true,
+      iconProps: { iconName: 'Add' },
+      onClick: () => history.push('/client/registry'),
+    },
     {
       key: 'excluir',
       text: 'Excluir',
@@ -45,28 +92,18 @@ const Clients: React.FC = () => {
         iconName: 'Delete',
         styles: { root: { color: 'red' } },
       },
+      onClick: () => {
+        handleDelete();
+      },
     },
     {
       key: 'edit',
       text: 'Editar',
       split: true,
       iconProps: { iconName: 'Edit' },
+      onClick: handleEdit,
     },
   ];
-
-  const getClients = useCallback(async () => {
-    try {
-      const { data } = await api.get('/clients/getall');
-
-      if (data) setSpeclialist(data);
-    } catch (error) {
-      toast.error('Erro ao obter a lista de especialistas');
-    }
-  }, []);
-
-  useEffect(() => {
-    getClients();
-  }, []);
 
   return (
     <Container>
@@ -83,8 +120,8 @@ const Clients: React.FC = () => {
         <CommandBar items={commandBarBtn} />
         <FlatList
           columns={columns}
-          data={specialists}
-          setSelection={(id) => console.log(id)}
+          data={clients}
+          setSelection={(id) => setSelected(id)}
         />
       </Panel>
       <Footer />

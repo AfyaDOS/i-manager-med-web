@@ -17,4 +17,4 @@ export const CardHeader = styled.header`
   }
 `;
 
-export default makeStyles.create({ buttonLogin: { alignSelf: 'flex-end' } });
+export default makeStyles.create({ buttonLogin: { marginLeft: 'auto' } });
