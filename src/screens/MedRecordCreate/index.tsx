@@ -4,7 +4,6 @@ import React, {
 import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
 import * as Yup from 'yup';
-// import { IDropdownOption } from '@fluentui/react';
 import { toast } from 'react-toastify';
 import { PrimaryButton, Image, Text } from '@fluentui/react';
 // import { useHistory } from 'react-router-dom';
@@ -55,7 +54,7 @@ const MedRecordCreate: React.FC = () => {
 
   const getClients = useCallback(async () => {
     try {
-      const { data } = await api.get('/clients/getall');
+      const { data } = await api.get('/clients');
 
       if (data) {
         setClients(
@@ -95,12 +94,12 @@ const MedRecordCreate: React.FC = () => {
   return (
     <Container>
       <Header />
-      <Form
-        ref={formRef}
-        onSubmit={handleSubmit}
-        style={{ height: 'calc(100vh - 100px)' }}
-      >
-        <Panel>
+
+      <Panel>
+        <Form
+          ref={formRef}
+          onSubmit={handleSubmit}
+        >
           <View>
             <View style={{ flexDirection: 'row' }}>
               <Image src={descriptionIMG} width={60} />
@@ -127,14 +126,15 @@ const MedRecordCreate: React.FC = () => {
               />
             </Column>
             <Column style={{ justifyContent: 'flex-start' }}>
-              <Input label="Descrição" name="description" />
+              <Input label="Descrição" name="description" multiline resizable={false} styles={{ field: { minHeight: 300 } }} />
               <PrimaryButton type="submit" style={{ marginTop: 29.04 }}>
                 Criar
               </PrimaryButton>
             </Column>
           </Row>
-        </Panel>
-      </Form>
+        </Form>
+      </Panel>
+
       <Footer />
     </Container>
   );

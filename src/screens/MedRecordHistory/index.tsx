@@ -1,29 +1,39 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
-  CommandBar, ICommandBarItemProps, Image, Text,
+  CommandBar,
+  ICommandBarItemProps,
+  SearchBox,
 } from '@fluentui/react';
-import { Icon, FontIcon } from '@fluentui/react/lib/Icon';
+import {
+  Dropdown,
+  IDropdownOption,
+} from '@fluentui/react/lib/Dropdown';
 import { useHistory } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { Header } from '../../components/Header';
-import { Footer } from '../../components/Footer';
-import { Container, Panel, View } from '../../styles';
+import {
+  Header,
+  Footer,
+  HeaderForm,
+} from '../../components';
+import { Container, Panel } from '../../styles';
 import medRecordImg from '../../assests/images/med-record.png';
 import { useApi } from '../../services/index';
-import { IMedRecord } from '../../commonTypes/index';
+import { IMedRecord, IClient } from '../../commonTypes/index';
 import { FlatList, IColumns } from '../../components/FlatList';
+import { Dialog } from '../../utils';
 
 const MedRecordHistory: React.FC = () => {
-  const clientID = 'cd4a6977-8612-4250-97b2-2740bdf8b832';
+  const client = '';
 
   const api = useApi();
   const history = useHistory();
-  const [itemSelect, setItemSelect] = useState<string>();
-  const [listRecords, setListRecords] = useState();
+  const [listRecords, setListRecords] = useState<IMedRecord[]>();
+  const [selected, setSelected] = useState<string | undefined>();
+  const [clients, setClients] = useState([]);
 
-  async function loadMedRecords() {
+  const loadMedRecords = useCallback(async () => {
     try {
-      const { data } = await api.get(`/medrecord/get/${clientID}`);
+      const { data } = await api.get(`/medrecord/get/${client}`);
       if (data) {
         setListRecords(data.map((item: IMedRecord) => ({
           clientName: item.client.name,
@@ -37,19 +47,115 @@ const MedRecordHistory: React.FC = () => {
     } catch (error) {
       toast.error('Erro ao obter o prontuário');
     }
-  }
+  }, []);
+
+  const getClients = useCallback(async () => {
+    try {
+      const { data } = await api.get('/clients/getall');
+
+      if (data) {
+        setClients(
+          data.map((item: IClient) => ({
+            key: item.id,
+            text: item.name,
+          })),
+        );
+      }
+    } catch (error) {
+      toast.error('Erro ao obter a lista de clientes');
+    }
+  }, []);
 
   useEffect(() => {
     loadMedRecords();
+    getClients();
   }, []);
 
-  function handleEdit() {
-    history.push(`/medrecord/update/${itemSelect}`);
+  async function handleDelete() {
+    try {
+      if (!selected) {
+        toast.warn('Você precisa selecionar um registro !!');
+        return;
+      }
+
+      Dialog.show({
+        title: 'Deletar registro',
+        subText: 'Tem certeza que deseja apagar o registro ?',
+        positive: async () => {
+          await api.delete(`/medrecord/delete/${selected}`);
+
+          loadMedRecords();
+        },
+      });
+    } catch (error) {
+      toast.error('Um erro ocoreu ao tentar deletar o registro');
+    }
   }
 
-  function handleDelete() {
-    api.delete(`/medrecor/delete/${itemSelect}`);
+  function handleEdit() {
+    if (selected) {
+      Dialog.show({
+        title: 'Edição de dados',
+        subText: 'Tem certeza que deseja editar a descrição de consulta ?',
+        positive: () => history.push('/medrecord/create', { item: listRecords?.filter((record) => record.id === selected)[0] }),
+      });
+    }
   }
+
+  const renderSearch = () => (
+    <SearchBox
+      styles={{ root: { minWidth: 300, width: 300 } }}
+      placeholder="Filtrar por especialista, ex: nome"
+      onSearch={(newValue) => console.log(`value is ${newValue}`)}
+    />
+  );
+
+  const viewDescription = () => (
+    history.push('/medrecord/create', { item: listRecords?.filter((record) => record.id === selected)[0] })
+  );
+
+  const commandBarBtn: ICommandBarItemProps[] = [
+    {
+      key: 'search',
+      onRenderIcon: renderSearch,
+    },
+    {
+      key: 'add',
+      text: 'Adicionar',
+      split: true,
+      iconProps: { iconName: 'Add' },
+      onClick: () => history.push('/medrecord/create'),
+    },
+    {
+      key: 'excluir',
+      text: 'Excluir',
+      split: true,
+      iconProps: {
+        iconName: 'Delete',
+        styles: { root: { color: 'red' } },
+      },
+      onClick: () => {
+        handleDelete();
+      },
+    },
+    {
+      key: 'edit',
+      text: 'Editar',
+      split: true,
+      iconProps: { iconName: 'Edit' },
+      onClick: handleEdit,
+    },
+    {
+      key: 'view',
+      text: 'Ver descrição completa',
+      split: true,
+      iconProps: {
+        iconName: 'EntryView',
+        styles: { root: { color: 'blue' } },
+      },
+      onClick: viewDescription,
+    },
+  ];
 
   const columns: IColumns[] = [
     {
@@ -83,48 +189,23 @@ const MedRecordHistory: React.FC = () => {
       maxWidth: 120,
     },
   ];
-  const commandBarBtn: ICommandBarItemProps[] = [
-    {
-      key: 'excluir',
-      text: 'Excluir',
-      split: true,
-      iconProps: {
-        iconName: 'Delete',
-        styles: { root: { color: 'red' } },
-      },
-      onClick: handleDelete,
-    },
-    {
-      key: 'edit',
-      text: 'Editar',
-      split: true,
-      iconProps: { iconName: 'Edit' },
-      onClick: handleEdit,
-    },
-  ];
+
+  const options: IDropdownOption[] = clients;
 
   return (
     <Container>
       <Header />
       <Panel>
-        <Icon iconName="OpenEnrollmentIcon" />
-        <FontIcon
-          aria-label="OpenEnrollmentIcon"
-          iconName="OpenEnrollmentIcon"
+        <HeaderForm src={medRecordImg} label="Prontuário" description="Para incluir uma descrição de consulta no prontuário preencha os campos abaixo." />
+        <Dropdown
+          label="Selecione um paciente para ver seu prontuário!"
+          options={options}
         />
-        <View>
-          <View style={{ flexDirection: 'row' }}>
-            <Image src={medRecordImg} width={60} />
-            <View style={{ marginLeft: 20 }}>
-              <Text variant="xxLarge">Prontuário</Text>
-            </View>
-          </View>
-        </View>
         <CommandBar items={commandBarBtn} />
         <FlatList
           columns={columns}
           data={listRecords}
-          setSelection={(id) => setItemSelect(id)}
+          setSelection={(id) => setSelected((prev) => (id === prev ? undefined : id))}
         />
       </Panel>
       <Footer />

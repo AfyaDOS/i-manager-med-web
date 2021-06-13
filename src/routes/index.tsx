@@ -40,10 +40,10 @@ const Routes: React.FC = () => (
       <PrivateRoutes exact path="/specialist/registry">
         <SpecialistRegistryScreen />
       </PrivateRoutes>
-      <PrivateRoutes exact path="/medrecord">
+      <PrivateRoutes exact path="/medrecord/create">
         <MedRecordCreateScreen />
       </PrivateRoutes>
-      <PrivateRoutes exact path="/medrecord/get">
+      <PrivateRoutes exact path="/medrecord">
         <MedRecordHistoryScreen />
       </PrivateRoutes>
       <AuthRoutes path="/" exact>
