@@ -22,6 +22,12 @@ const navLinkGroups: INavLinkGroup[] = [
   {
     links: [
       {
+        name: 'Consultas',
+        url: 'service',
+        key: '/service',
+        iconProps: { iconName: 'ReservationOrders' },
+      },
+      {
         name: 'Home',
         url: '/',
         key: '/',

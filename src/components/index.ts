@@ -6,3 +6,5 @@ export { Header } from './Header';
 export { FlatList } from './FlatList';
 export { Footer } from './Footer';
 export { Dialog } from './Dialog';
+export { UnformDatePicker } from './UnformDatePicker';
+export { ModalPreview } from './ModalPreview';

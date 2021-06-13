@@ -13,6 +13,8 @@ import {
   MedRecordHistoryScreen,
   NotFoundScreen,
   ClientScreen,
+  ServiceRegistryScreen,
+  ServicesScreen,
 } from '../screens';
 import { refPanel } from '../utils';
 import { PrivateRoutes } from './app.routes';
@@ -22,6 +24,9 @@ const Routes: React.FC = () => (
   <BrowserRouter>
     <Drawer ref={refPanel} />
     <Switch>
+      <AuthRoutes path="/" exact>
+        <HomeScreen />
+      </AuthRoutes>
       <PrivateRoutes exact path="/client">
         <ClientScreen />
       </PrivateRoutes>
@@ -30,6 +35,12 @@ const Routes: React.FC = () => (
       </PrivateRoutes>
       <PrivateRoutes exact path="/user">
         <UserScreen />
+      </PrivateRoutes>
+      <PrivateRoutes exact path="/service">
+        <ServicesScreen />
+      </PrivateRoutes>
+      <PrivateRoutes exact path="/service/registry">
+        <ServiceRegistryScreen />
       </PrivateRoutes>
       <PrivateRoutes exact path="/user/registry">
         <UserRegistryScreen />
@@ -46,9 +57,6 @@ const Routes: React.FC = () => (
       <PrivateRoutes exact path="/medrecord/get">
         <MedRecordHistoryScreen />
       </PrivateRoutes>
-      <AuthRoutes path="/" exact>
-        <HomeScreen />
-      </AuthRoutes>
       <AuthRoutes path="/login" exact>
         <LoginScreen />
       </AuthRoutes>

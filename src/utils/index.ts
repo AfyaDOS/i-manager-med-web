@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { createRef } from 'react';
 import * as Yup from 'yup';
+import { IDatePickerStrings } from '@fluentui/react';
 import { HandleDialog } from '../components/Dialog';
 import { IHandlePanel } from '../drawer';
 import { IShowDialog } from '../commonTypes';
@@ -189,3 +190,48 @@ export function masked(maskOf: string, text: string): string {
   const valueMasked = maskedArray.join('');
   return valueMasked;
 }
+
+export const DayPickerStrings: IDatePickerStrings = {
+  months: [
+    'Janeiro',
+    'Fevereiro',
+    'Março',
+    'Abril',
+    'Maio',
+    'Junho',
+    'Julho',
+    'Agosto',
+    'Setembro',
+    'Outubro',
+    'Novembro',
+    'Dezembro',
+  ],
+
+  shortMonths: [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Abr',
+    'Mai',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Set',
+    'Out',
+    'Nov',
+    'Dez',
+  ],
+
+  days: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sabado'],
+
+  shortDays: ['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SÁB'],
+
+  goToToday: 'Go to today',
+  prevMonthAriaLabel: 'Go to previous month',
+  nextMonthAriaLabel: 'Go to next month',
+  prevYearAriaLabel: 'Go to previous year',
+  nextYearAriaLabel: 'Go to next year',
+  closeButtonAriaLabel: 'Close date picker',
+  monthPickerHeaderAriaLabel: '{0}, select to change the year',
+  yearPickerHeaderAriaLabel: '{0}, select to change the month',
+};

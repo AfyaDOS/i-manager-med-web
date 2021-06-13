@@ -10,9 +10,20 @@ export enum EBloodTypes {
   'AB-',
 }
 
+export enum EServiceState {
+  'AGENDADO',
+  'REALIZADO',
+  'CANCELADO',
+}
+
 export interface IBloodType {
   id: string;
   typeOf: string;
+}
+
+export interface IServiceState {
+  id: string;
+  state: string;
 }
 
 export interface IAddress {
