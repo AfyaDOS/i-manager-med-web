@@ -14,7 +14,8 @@ import { Dialog } from '../../utils';
 import { HeaderForm } from '../../components/HeaderForm';
 
 const Specialist: React.FC = () => {
-  const [specialists, setSpeclialist] = useState<ISpecialist[]>([]);
+  const [specialists, setSpecialist] = useState<ISpecialist[]>([]);
+  const [backupSpecialist, setBackupSpecialist] = useState<ISpecialist[]>([]);
   const api = useApi();
   const history = useHistory();
   const [itemSelect, setItemSelect] = useState<string>();
@@ -23,7 +24,10 @@ const Specialist: React.FC = () => {
     try {
       const { data } = await api.get('/specialist');
 
-      if (data) setSpeclialist(data);
+      if (data) {
+        setSpecialist(data);
+        setBackupSpecialist(data);
+      }
     } catch (error) {
       toast.error('Erro ao obter a lista de especialistas');
     }
@@ -72,6 +76,7 @@ const Specialist: React.FC = () => {
       key: 'registry',
       name: 'Registro',
       maxWidth: 120,
+      mask: '$$$$$$-$$',
     },
     {
       fieldName: 'specialties',
@@ -91,20 +96,34 @@ const Specialist: React.FC = () => {
       key: 'phone',
       name: 'Telefone',
       maxWidth: 120,
+      mask: '($$) $$$$$-$$$$',
+
     },
     {
       fieldName: 'cell',
       key: 'cell',
       name: 'Celular',
       maxWidth: 120,
+      mask: '($$) $$$$-$$$$',
+
     },
   ];
+  function handleFilter(text?: string) {
+    setSpecialist(backupSpecialist.filter((client) => {
+      if (client.name.toLowerCase().includes(String(text?.toLowerCase()))) {
+        return true;
+      }
+      return false;
+    }));
 
+    if (text === '') setSpecialist(backupSpecialist);
+  }
   const renderSearch = () => (
     <SearchBox
       styles={{ root: { minWidth: 300, width: 300 } }}
       placeholder="Filtrar especialistas, ex: registro, nome"
-      onSearch={(newValue) => console.log(`value is ${newValue}`)}
+      onChange={(_, text) => handleFilter(text)}
+
     />
   );
   const commandBarBtn: ICommandBarItemProps[] = [

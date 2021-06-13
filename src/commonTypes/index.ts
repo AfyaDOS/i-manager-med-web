@@ -49,7 +49,7 @@ export interface ISpecialist {
     created_at: string;
     updated_at: string;
   }[];
-  address_id: {
+  address: {
     id: string;
     city: string;
     state: string;
