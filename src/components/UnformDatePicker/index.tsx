@@ -44,10 +44,10 @@ const UnformDatePicker: React.FC<Props> = ({
   return (
     <DatePicker
       {...props}
-      styles={{ root: { marginTop: '3%' } }}
+      styles={{ root: { marginTop: 5 } }}
       value={
         dropDownRef.current.value
-          ? new Date(Number(dropDownRef.current.value))
+          ? new Date(dropDownRef.current.value)
           : undefined
       }
       onSelectDate={(date) => {

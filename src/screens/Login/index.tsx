@@ -37,7 +37,7 @@ const Login: React.FC = () => {
       if (success) {
         toast.success('Login efetuado com sucesso !!', {
           autoClose: 1000,
-          onClose: () => history.push('/home'),
+          onClose: () => history.push('/services'),
         });
       }
     } catch (error) {

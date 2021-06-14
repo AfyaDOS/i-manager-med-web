@@ -58,6 +58,7 @@ const ServiceRegistry: React.FC = () => {
   const getClients = useCallback(async () => {
     try {
       const { data } = await api.get('/clients');
+      getBloodTypes();
 
       if (data) {
         setClients(
@@ -75,6 +76,7 @@ const ServiceRegistry: React.FC = () => {
   const getSpecialist = useCallback(async () => {
     try {
       const { data } = await api.get('/specialist');
+      getClients();
 
       if (data) {
         setSpecialists(
@@ -92,12 +94,11 @@ const ServiceRegistry: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    getBloodTypes();
-    getClients();
     getSpecialist();
   }, []);
 
   useEffect(() => {
+    console.log(state?.item);
     setData(formRef, state?.item);
   }, [state?.item]);
 
@@ -106,31 +107,45 @@ const ServiceRegistry: React.FC = () => {
       const schema = Yup.object().shape({
         client: Yup.string().required('O cliente é obrigatório !!'),
         specialist: Yup.string().required('O especialista é obrigatório !!'),
-        serviceState: Yup.string().required('O especialista é obrigatório !!'),
+        serviceState: Yup.string().required('O staus é obrigatório !!'),
         scheduleDate: Yup.string().required(
           'A data de agendamento é obrigatória !!',
         ),
         scheduleTime: Yup.string().required(
           'A hora de agendamento é obrigatória !!',
         ),
+        serviceDate: Yup.string(),
+        serviceTime: Yup.string(),
       });
+
+      console.log(data);
+
+      await schema.validate(data, { abortEarly: false });
 
       const service = {
         client: data.client,
         specialist: data.specialist,
+        serviceState: data.serviceState,
         scheduleDate: new Date(
-          data.scheduleDate.getFullYear(),
-          data.scheduleDate.getMonth(),
-          data.scheduleDate.getDate(),
-          data.scheduleTime.split(':')[0],
-          data.scheduleTime.split(':')[1],
+          new Date(data.scheduleDate)?.getFullYear(),
+          new Date(data.scheduleDate)?.getMonth(),
+          new Date(data.scheduleDate)?.getDate(),
+          data.scheduleTime?.split(':')[0],
+          data.scheduleTime?.split(':')[1],
+        ),
+        serviceDate: new Date(
+          new Date(data.serviceDate)?.getFullYear(),
+          new Date(data.serviceDate)?.getMonth(),
+          new Date(data.serviceDate)?.getDate(),
+          data.serviceDate?.split(':')[0],
+          data.serviceDate?.split(':')[1],
         ),
       };
 
-      await schema.validate(data, { abortEarly: false });
+      console.log(service);
 
       if (state?.item) {
-        await api.put(`/services/${state?.item.id}`, { ...data });
+        await api.put(`/services/${state?.item.id}`, { ...service });
       } else {
         await api.post('/services', { ...service });
       }
@@ -147,9 +162,12 @@ const ServiceRegistry: React.FC = () => {
         },
       );
     } catch (error) {
-      console.log(error);
+      console.log(error.response.data);
       setErrors(formRef, error);
-      toast.error('Ops.. Ocoreu algum erro ao tentar registrar a consulta.');
+      const message = state?.item
+        ? 'Ops.. Ocoreu algum erro ao tentar atualizar a consulta'
+        : 'Ops.. Ocoreu algum erro ao tentar registrar a consulta';
+      toast.error(message);
     }
   }, []);
 
@@ -167,7 +185,12 @@ const ServiceRegistry: React.FC = () => {
         <Form style={{ flex: 1 }} ref={formRef} onSubmit={handleSubmit}>
           <Row>
             <Column>
-              <Select name="client" label="Paciente" options={clients} />
+              <Select
+                disabled={!!state?.item}
+                name="client"
+                label="Paciente"
+                options={clients}
+              />
               <Select
                 name="specialist"
                 label="Especialista:"
@@ -179,6 +202,7 @@ const ServiceRegistry: React.FC = () => {
                 options={serviceState}
               />
               <UnformDatePicker
+                disabled={!!state?.item}
                 formatDate={(date) => (date ? date.toLocaleDateString('pt-BR') : '')}
                 minDate={new Date()}
                 strings={DayPickerStrings}
@@ -186,23 +210,33 @@ const ServiceRegistry: React.FC = () => {
                 label="Data da consulta:"
               />
               <Input
+                disabled={!!state?.item}
                 name="scheduleTime"
                 label="Hora da consulta:"
                 type="time"
               />
-              {state?.item && (
-                <UnformDatePicker
-                  formatDate={(date) => (date ? date.toLocaleDateString('pt-BR') : '')}
-                  minDate={new Date()}
-                  strings={DayPickerStrings}
-                  name="serviceDate"
-                  label="Data do atendimento:"
-                />
-              )}
             </Column>
-            <PrimaryButton style={{ marginTop: 43 }} type="submit">
-              {state?.item ? 'ATUALIZAR' : 'ENVIAR'}
-            </PrimaryButton>
+            <Column>
+              {state?.item && (
+                <>
+                  <UnformDatePicker
+                    formatDate={(date) => (date ? date.toLocaleDateString('pt-BR') : '')}
+                    minDate={new Date()}
+                    strings={DayPickerStrings}
+                    name="serviceDate"
+                    label="Data do atendimento:"
+                  />
+                  <Input
+                    name="serviceTime"
+                    label="Hora do atendiemento:"
+                    type="time"
+                  />
+                </>
+              )}
+              <PrimaryButton style={{ marginTop: 34 }} type="submit">
+                {state?.item ? 'ATUALIZAR' : 'ENVIAR'}
+              </PrimaryButton>
+            </Column>
           </Row>
         </Form>
       </Panel>

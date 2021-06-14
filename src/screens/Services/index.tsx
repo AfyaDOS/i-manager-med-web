@@ -12,13 +12,13 @@ import { Footer } from '../../components/Footer';
 import { Container, Panel } from '../../styles';
 import serviceImg from '../../assests/images/service.png';
 import { useApi } from '../../services/index';
-import { IService } from '../../commonTypes';
+import { EServiceState, IService } from '../../commonTypes';
 import { FlatList, IColumns } from '../../components/FlatList';
 import { Dialog } from '../../utils';
 import { HeaderForm } from '../../components';
 
 const Services: React.FC = () => {
-  const [services, setServices] = useState<IService[]>();
+  const [services, setServices] = useState<any[]>();
   const [servicesList, setServicesList] = useState<Array<any>>();
   const [backupServices, setBackupServices] = useState<any[]>([]);
   const api = useApi();
@@ -26,17 +26,17 @@ const Services: React.FC = () => {
   const [selected, setSelected] = useState<string | undefined>();
   const [selectesDate, setSelectedDate] = useState(new Date());
 
-  console.log(services);
-
   const getServices = useCallback(async (date?: Date) => {
     try {
       const { data } = await api.get('/services', { params: { date: date?.toLocaleDateString('pt-BR') || selectesDate } });
 
       if (data) {
+        console.log('===========================', data);
         const newDateList = data.map((service: IService) => ({
           id: service.id,
           name: service.client.name,
           specialist: service.specialist.name,
+          state: EServiceState[service.serviceState.state],
           scheduleDate: new Date(service.scheduleDate).toLocaleDateString(
             'pt-BR',
           ),
@@ -45,12 +45,18 @@ const Services: React.FC = () => {
             { hour: '2-digit', minute: '2-digit' },
           ),
         }));
-        setServices(data);
+        setServices(data.map((service: IService) => ({
+          id: service.id,
+          client: service.client.id,
+          specialist: service.specialist.id,
+          serviceState: service.serviceState.id,
+          scheduleDate: service.scheduleDate,
+          scheduleTime: new Date(service.scheduleDate).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+        })));
         setServicesList(newDateList);
         setBackupServices(newDateList);
       }
     } catch (error) {
-      console.log(error);
       toast.error('Erro ao obter a lista de atendimentos');
     }
   }, []);
@@ -72,13 +78,19 @@ const Services: React.FC = () => {
       fieldName: 'scheduleDate',
       key: 'scheduleDate',
       name: 'Date de Agendamento',
-      maxWidth: 250,
+      maxWidth: 200,
     },
     {
       fieldName: 'timeSchedule',
       key: 'timeSchedule',
       name: 'Hora de Agendamento',
-      maxWidth: 250,
+      maxWidth: 200,
+    },
+    {
+      fieldName: 'state',
+      key: 'state',
+      name: 'Status do atendimento',
+      maxWidth: 150,
     },
   ];
 
@@ -108,7 +120,7 @@ const Services: React.FC = () => {
       Dialog.show({
         title: 'Edição de dados',
         subText: 'Tem certeza que deseja editar os dados do paciente ?',
-        positive: () => history.push('/client/registry', { item: servicesList?.filter((client) => client.id === selected)[0] }),
+        positive: () => history.push('/service/registry', { item: services?.filter((service) => service.id === selected)[0] }),
       });
     }
   }

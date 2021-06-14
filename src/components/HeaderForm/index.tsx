@@ -9,7 +9,7 @@ interface Props{
 }
 
 const HeaderForm: React.FC<Props> = ({ description, src, label }) => (
-  <View style={{ marginTop: 20, marginBottom: 20 }}>
+  <View style={{ marginTop: '1em' }}>
     <View style={{ flexDirection: 'row' }}>
       <Image src={src} width={60} />
       <View style={{ marginLeft: 20 }}>

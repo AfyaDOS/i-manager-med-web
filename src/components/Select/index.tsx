@@ -1,15 +1,17 @@
 /* eslint-disable no-nested-ternary */
-import { Dropdown, IDropdownOption } from '@fluentui/react';
+import { Dropdown, IDropdownOption, IDropdownProps } from '@fluentui/react';
 import { useField } from '@unform/core';
 import React, { useEffect, useRef, useState } from 'react';
 
-interface Props {
+interface Props extends IDropdownProps {
   name: string;
   options: IDropdownOption[];
   label: string;
 }
 
-const Select: React.FC<Props> = ({ name, options, label }) => {
+const Select: React.FC<Props> = ({
+  name, options, label, ...rest
+}) => {
   const {
     fieldName, registerField, error, clearError,
   } = useField(name);
@@ -45,6 +47,7 @@ const Select: React.FC<Props> = ({ name, options, label }) => {
 
   return (
     <Dropdown
+      {...rest}
       selectedKey={
         defaultValue !== undefined && selectedItem === undefined
           ? defaultValue
@@ -53,7 +56,7 @@ const Select: React.FC<Props> = ({ name, options, label }) => {
             : undefined
       }
       onFocus={clearError}
-      styles={{ root: { marginTop: '1em' } }}
+      styles={{ root: { marginTop: 5 } }}
       onChange={onChange}
       label={label}
       errorMessage={error}

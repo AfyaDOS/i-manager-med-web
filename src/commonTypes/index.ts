@@ -100,6 +100,10 @@ export interface IService{
   id?: string;
   scheduleDate: Date;
   serviceDate?: Date;
+  serviceState: {
+    id: string;
+    state: number;
+  },
   client: IClient;
   specialist: ISpecialist;
 }

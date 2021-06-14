@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import {
   Check,
   mergeStyleSets,
@@ -68,8 +69,7 @@ const FlatList: React.FC<Props> = ({
           </Stack.Item>
           {columns.map(({ name, key, maxWidth }) => (
             <Stack.Item
-              style={{ maxWidth }}
-              grow={maxWidth}
+              style={{ width: maxWidth }}
               tokens={{ padding: 10 }}
               className={mergedStyles.item}
               key={key}
@@ -81,40 +81,47 @@ const FlatList: React.FC<Props> = ({
         <Separator />
         <Stack className={mergedStyles.root}>
           {data ? (
-            data.map((item: any) => (
-              <Stack
-                key={item.id}
-                onClick={() => handleSelect(item.id)}
-                className={mergedStyles.item}
-                horizontal
-              >
-                <Stack.Item tokens={{ padding: 10 }}>
-                  <Check checked={checked === item.id} />
-                </Stack.Item>
-                {columns.map(({
-                  maxWidth, fieldName, isArray, mask,
-                }) => (
-                  <Stack.Item
-                    key={fieldName}
-                    style={{ maxWidth }}
-                    tokens={{ padding: 10 }}
-                    grow={maxWidth}
-                  >
-                    {!isArray ? (
-                      <Text className={mergedStyles.text}>
-                        {mask ? masked(mask, item[fieldName]) : item[fieldName]}
-                      </Text>
-                    ) : (
-                      <Text>
-                        {item[fieldName]
-                          .map((obj: any) => obj[isArray.fieldName])
-                          .join(' - ')}
-                      </Text>
-                    )}
+            data.length > 0 ? (
+              data.map((item: any) => (
+                <Stack
+                  key={item.id}
+                  onClick={() => handleSelect(item.id)}
+                  className={mergedStyles.item}
+                  horizontal
+                >
+                  <Stack.Item tokens={{ padding: 10 }}>
+                    <Check checked={checked === item.id} />
                   </Stack.Item>
-                ))}
-              </Stack>
-            ))
+                  {columns.map(({
+                    maxWidth, fieldName, isArray, mask,
+                  }) => (
+                    <Stack.Item
+                      key={fieldName}
+                      style={{ width: maxWidth }}
+                      tokens={{ padding: 10 }}
+                    >
+                      {!isArray ? (
+                        <Text className={mergedStyles.text}>
+                          {mask
+                            ? masked(mask, item[fieldName])
+                            : item[fieldName]}
+                        </Text>
+                      ) : (
+                        <Text>
+                          {item[fieldName]
+                            .map((obj: any) => obj[isArray.fieldName])
+                            .join(' - ')}
+                        </Text>
+                      )}
+                    </Stack.Item>
+                  ))}
+                </Stack>
+              ))
+            ) : (
+              <View>
+                <Text>Nenhuma informação para exibir.</Text>
+              </View>
+            )
           ) : (
             <Spinner label="Carregando..." />
           )}

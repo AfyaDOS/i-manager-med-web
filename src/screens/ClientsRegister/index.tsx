@@ -189,7 +189,7 @@ const ClientsRegister: React.FC = () => {
                 label="Tipo Sanguíneo:"
               />
               <Select options={gendersType} name="gender" label="Sexo:" />
-              <PrimaryButton style={{ marginTop: 43 }} type="submit">
+              <PrimaryButton style={{ marginTop: 34 }} type="submit">
                 {state?.item ? 'ATUALIZAR' : 'ENVIAR'}
               </PrimaryButton>
             </Column>
