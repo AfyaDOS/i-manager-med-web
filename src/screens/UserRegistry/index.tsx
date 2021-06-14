@@ -57,14 +57,26 @@ const UserRegistry: React.FC = () => {
         }
       }
     }
-    api.post('/users', { ...data }).then(() => {
-      toast.success('Usuário cadastrado com sucesso !!', { autoClose: 3000 });
-      history.push('/user');
-      formRef.current?.reset();
-    })
-      .catch((e) => {
-        toast.error(`Usuário não cadastrado !! ${e}`, { autoClose: 3000 });
-      });
+
+    if (state?.item) {
+      api.put(`/users/${state?.item.id}`, { ...data }).then(() => {
+        toast.success('Usuário cadastrado com sucesso !!', { autoClose: 3000 });
+        history.push('/user');
+        formRef.current?.reset();
+      })
+        .catch((e) => {
+          toast.error(`Usuário não cadastrado !! ${e}`, { autoClose: 3000 });
+        });
+    } else {
+      api.post('/users', { ...data }).then(() => {
+        toast.success('Usuário cadastrado com sucesso !!', { autoClose: 3000 });
+        history.push('/user');
+        formRef.current?.reset();
+      })
+        .catch((e) => {
+          toast.error(`Usuário não cadastrado !! ${e}`, { autoClose: 3000 });
+        });
+    }
   }, []);
 
   return (
@@ -74,9 +86,9 @@ const UserRegistry: React.FC = () => {
         <Form ref={formRef} onSubmit={handleSubmit}>
           <HeaderForm
             src={specialist}
-            label="Usuários"
+            label={state?.item ? 'Atualização de Usuário' : 'Cadastro de Usuário'}
             description="Para cadastrar, preencha os campos abaixo com os dados do
-                  especialista."
+                  Usuário."
           />
           <Row>
             <Column style={{ justifyContent: 'flex-start' }}>

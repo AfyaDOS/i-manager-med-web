@@ -14,6 +14,8 @@ import { HeaderForm } from '../../components/HeaderForm';
 
 const User: React.FC = () => {
   const [users, setUser] = useState<IUser[]>([]);
+  const [backUsers, setBackupUsers] = useState<IUser[]>([]);
+
   const api = useApi();
   const history = useHistory();
   const [itemSelect, setItemSelect] = useState<string>();
@@ -22,7 +24,10 @@ const User: React.FC = () => {
     try {
       const { data } = await api.get('/users');
 
-      if (data) setUser(data);
+      if (data) {
+        setUser(data);
+        setBackupUsers(data);
+      }
     } catch (error) {
       toast.error('Erro ao obter a lista de usuários');
     }
@@ -74,11 +79,22 @@ const User: React.FC = () => {
     },
   ];
 
+  function handleFilter(text?: string) {
+    setUser(backUsers.filter((user) => {
+      if (user.name.toLowerCase().includes(String(text?.toLowerCase()))) {
+        return true;
+      }
+      return false;
+    }));
+
+    if (text === '') setUser(backUsers);
+  }
+
   const renderSearch = () => (
     <SearchBox
       styles={{ root: { minWidth: 300, width: 300 } }}
       placeholder="Filtrar especialistas, ex: registro, nome"
-      onSearch={(newValue) => console.log(`value is ${newValue}`)}
+      onChange={(_, text) => handleFilter(text)}
     />
   );
 
@@ -112,6 +128,7 @@ const User: React.FC = () => {
       onClick: handleDelete,
     },
   ];
+
   return (
     <Container>
       <Header />
@@ -119,7 +136,7 @@ const User: React.FC = () => {
         <HeaderForm
           src={userImg}
           label="Usuários"
-          description=""
+          description="Aqui estão os registros dos usuários cadastrados."
         />
         <CommandBar items={commandBarBtn} />
         <FlatList
