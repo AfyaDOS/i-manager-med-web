@@ -164,7 +164,7 @@ const Specialist: React.FC = () => {
         <HeaderForm
           src={specialistImg}
           label="Especialistas"
-          description=""
+          description="Aqui estão os registros dos especialistas cadastrados."
         />
         <CommandBar items={commandBarBtn} />
         <FlatList
