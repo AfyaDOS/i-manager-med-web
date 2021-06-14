@@ -48,8 +48,8 @@ const MedRecordHistory: React.FC = () => {
             clientName: record.client.name,
             specialistName: record.specialist.name,
             description: record.description,
-            date: new Date(record.created_at).toLocaleDateString(),
-            time: new Date(record.created_at).toLocaleTimeString(),
+            date: new Date(record.created_at).toLocaleDateString('pt-BR'),
+            time: new Date(record.created_at).toLocaleTimeString('pt-BR'),
             id: record.id,
           })),
         );

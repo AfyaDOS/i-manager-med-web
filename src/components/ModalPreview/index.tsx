@@ -3,6 +3,8 @@ import {
   Text,
   getTheme,
   mergeStyleSets,
+  IIconProps,
+  IconButton,
 } from '@fluentui/react';
 import { useBoolean } from '@fluentui/react-hooks';
 import React, { forwardRef, useImperativeHandle, useState } from 'react';
@@ -11,35 +13,14 @@ import { Column, Row, View } from '../../styles';
 import styles from './styles';
 
 const theme = getTheme();
+const cancelIcon: IIconProps = { iconName: 'Cancel' };
 const contentStyles = mergeStyleSets({
   container: {
     display: 'flex',
     flexFlow: 'column nowrap',
-    alignItems: 'stretch',
     minHeight: '80%',
     minWidth: '80%',
-  },
-  header: [
-    theme.fonts.xLargePlus,
-    {
-      flex: '1 1 auto',
-      borderTop: `4px solid ${theme.palette.themePrimary}`,
-      color: theme.palette.neutralPrimary,
-      display: 'flex',
-      alignItems: 'start',
-      fontWeight: 'bold',
-      padding: '12px 12px 14px 24px',
-    },
-  ],
-  body: {
-    flex: '4 4 auto',
-    padding: '0 24px 24px 24px',
-    overflowY: 'hidden',
-    selectors: {
-      p: { margin: '14px 0' },
-      'p:first-child': { marginTop: 0 },
-      'p:last-child': { marginBottom: 0 },
-    },
+    borderTop: `4px solid ${theme.palette.themePrimary}`,
   },
 });
 
@@ -64,25 +45,35 @@ const ModalPreview = forwardRef<HandleModal>((_, ref) => {
       isBlocking={false}
       containerClassName={contentStyles.container}
     >
-      <View className={contentStyles.header}>
+      <IconButton
+        style={styles.defaultButton}
+        iconProps={cancelIcon}
+        ariaLabel="Close popup modal"
+        onClick={setFalse}
+      />
+      <View>
         <Row>
           <Column>
             <Text style={styles.textHeader}>Paciente:</Text>
-            <Text>{record?.client.name}</Text>
-            <Text>Especialista:</Text>
-            <Text>{record?.specialist.name}</Text>
+            <Text style={styles.textHeaderBody}>{record?.client.name}</Text>
+            <Text style={styles.textHeader}>Especialista:</Text>
+            <Text style={styles.textHeaderBody}>{record?.specialist.name}</Text>
           </Column>
           <Column>
-            <Text>Data:</Text>
-            <Text>{record?.created_at}</Text>
-            <Text>Hora:</Text>
-            <Text>{record?.created_at}</Text>
+            <Text style={styles.textHeader}>Data:</Text>
+            <Text style={styles.textHeaderBody}>
+              {new Date(String(record?.created_at)).toLocaleDateString('pt-BR')}
+            </Text>
+            <Text style={styles.textHeader}>Hora:</Text>
+            <Text style={styles.textHeaderBody}>
+              {new Date(String(record?.created_at)).toLocaleTimeString('pt-BR')}
+            </Text>
           </Column>
         </Row>
       </View>
-      <View className={contentStyles.body}>
-        <Text>Descrição:</Text>
-        <Text>{record?.description}</Text>
+      <View>
+        <Text style={styles.textTitleBody}>Descrição:</Text>
+        <Text style={styles.textBody}>{record?.description}</Text>
       </View>
     </Modal>
   );

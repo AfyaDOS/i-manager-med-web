@@ -38,7 +38,7 @@ const FlatList: React.FC<Props> = ({
 
   const mergedStyles = mergeStyleSets({
     root: {
-      maxHeight: '65vh',
+      maxHeight: '200px',
       overflow: 'auto',
     },
     item: { selectors: { '&:hover': { background: '#eee' } } },
