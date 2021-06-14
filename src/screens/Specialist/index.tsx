@@ -80,7 +80,7 @@ const Specialist: React.FC = () => {
     },
     {
       fieldName: 'specialties',
-      key: 'name',
+      key: 'specialties',
       name: 'Especialidades',
       maxWidth: 120,
       isArray: { fieldName: 'specialty' },
