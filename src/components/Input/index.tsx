@@ -50,7 +50,9 @@ const Input: React.FC<Props> = ({
       ref: inputRef,
       getValue: (ref) => (numeric ? ref.current?.replace(/\D/g, '') : ref.current),
       setValue: (ref, text: string | undefined) => {
-        handleChange(text);
+        if (fieldName !== 'password') {
+          handleChange(text);
+        }
       },
       clearValue: () => {
         setInputValue(undefined);

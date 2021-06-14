@@ -59,6 +59,7 @@ const UserRegistry: React.FC = () => {
     }
 
     if (state?.item) {
+      formRef.current?.setFieldValue('password', '');
       api.put(`/users/${state?.item.id}`, { ...data }).then(() => {
         toast.success('Usuário cadastrado com sucesso !!', { autoClose: 3000 });
         history.push('/user');
