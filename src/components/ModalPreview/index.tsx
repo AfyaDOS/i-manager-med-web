@@ -1,8 +1,28 @@
-import { Modal, Text } from '@fluentui/react';
+import {
+  Modal,
+  Text,
+  getTheme,
+  mergeStyleSets,
+  IIconProps,
+  IconButton,
+} from '@fluentui/react';
 import { useBoolean } from '@fluentui/react-hooks';
 import React, { forwardRef, useImperativeHandle, useState } from 'react';
 import { IMedRecord } from '../../commonTypes';
-import { View } from '../../styles';
+import { Column, Row, View } from '../../styles';
+import styles from './styles';
+
+const theme = getTheme();
+const cancelIcon: IIconProps = { iconName: 'Cancel' };
+const contentStyles = mergeStyleSets({
+  container: {
+    display: 'flex',
+    flexFlow: 'column nowrap',
+    minHeight: '80%',
+    minWidth: '80%',
+    borderTop: `4px solid ${theme.palette.themePrimary}`,
+  },
+});
 
 export interface HandleModal{
     show: (item: IMedRecord) => void
@@ -19,9 +39,41 @@ const ModalPreview = forwardRef<HandleModal>((_, ref) => {
 
   useImperativeHandle(ref, () => ({ show }));
   return (
-    <Modal isOpen={open} onDismiss={setFalse} isBlocking={false}>
+    <Modal
+      isOpen={open}
+      onDismiss={setFalse}
+      isBlocking={false}
+      containerClassName={contentStyles.container}
+    >
+      <IconButton
+        style={styles.defaultButton}
+        iconProps={cancelIcon}
+        ariaLabel="Close popup modal"
+        onClick={setFalse}
+      />
       <View>
-        <Text>{record?.client.name}</Text>
+        <Row>
+          <Column>
+            <Text style={styles.textHeader}>Paciente:</Text>
+            <Text style={styles.textHeaderBody}>{record?.client.name}</Text>
+            <Text style={styles.textHeader}>Especialista:</Text>
+            <Text style={styles.textHeaderBody}>{record?.specialist.name}</Text>
+          </Column>
+          <Column>
+            <Text style={styles.textHeader}>Data:</Text>
+            <Text style={styles.textHeaderBody}>
+              {new Date(String(record?.created_at)).toLocaleDateString('pt-BR')}
+            </Text>
+            <Text style={styles.textHeader}>Hora:</Text>
+            <Text style={styles.textHeaderBody}>
+              {new Date(String(record?.created_at)).toLocaleTimeString('pt-BR')}
+            </Text>
+          </Column>
+        </Row>
+      </View>
+      <View>
+        <Text style={styles.textTitleBody}>Descrição:</Text>
+        <Text style={styles.textBody}>{record?.description}</Text>
       </View>
     </Modal>
   );

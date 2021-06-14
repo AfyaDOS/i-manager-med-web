@@ -138,7 +138,7 @@ const MedRecordCreate: React.FC = () => {
               />
             </Column>
             <Column>
-              <Input label="Descrição" name="description" multiline resizable={false} styles={{ root: { minHeight: 300 } }} />
+              <Input label="Descrição" name="description" multiline resizable={false} styles={{ field: { minHeight: 250 } }} />
               <PrimaryButton style={{ marginTop: 43 }} type="submit">
                 {state?.item ? 'ATUALIZAR' : 'ENVIAR'}
               </PrimaryButton>
