@@ -4,7 +4,6 @@ import React, {
 import {
   CommandBar,
   ICommandBarItemProps,
-  SearchBox,
   Dropdown,
   IDropdownOption,
 } from '@fluentui/react';
@@ -123,19 +122,20 @@ const MedRecordHistory: React.FC = () => {
     }
   }
 
-  const renderSearch = () => (
-    <SearchBox
-      styles={{ root: { minWidth: 300, width: 300 } }}
-      placeholder="Filtrar por especialista, ex: nome"
-      onSearch={(newValue) => console.log(`value is ${newValue}`)}
-    />
-  );
+  function showModal() {
+    try {
+      if (!selected) {
+        toast.warn('Você precisa selecionar um registro !!');
+        return;
+      }
+
+      refModal.current?.show(records.filter((record) => record.id === selected)[0]);
+    } catch (error) {
+      toast.error('Um erro ocoreu ao tentar visualizar o registro');
+    }
+  }
 
   const commandBarBtn: ICommandBarItemProps[] = [
-    {
-      key: 'search',
-      onRenderIcon: renderSearch,
-    },
     {
       key: 'add',
       text: 'Adicionar',
@@ -170,7 +170,7 @@ const MedRecordHistory: React.FC = () => {
         iconName: 'EntryView',
         styles: { root: { color: 'blue' } },
       },
-      onClick: () => refModal.current?.show(records.filter((record) => record.id === selected)[0]),
+      onClick: showModal,
     },
   ];
 
@@ -203,7 +203,7 @@ const MedRecordHistory: React.FC = () => {
       fieldName: 'description',
       key: 'description',
       name: 'Descrição',
-      maxWidth: 120,
+      maxWidth: 500,
     },
   ];
 

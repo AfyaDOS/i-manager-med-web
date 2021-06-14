@@ -66,7 +66,7 @@ const Input: React.FC<Props> = ({
     <TextField
       {...rest}
       label={label}
-      styles={{ root: { marginTop: '1em' } }}
+      styles={{ ...(rest.styles || {}), root: { marginTop: '1em' } }}
       value={inputValue}
       onChange={(_, text) => handleChange(text)}
       onFocus={clearError}
