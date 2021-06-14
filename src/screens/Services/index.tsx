@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import {
   CommandBar,
+  DatePicker,
   ICommandBarItemProps,
   SearchBox,
 } from '@fluentui/react';
@@ -11,33 +12,47 @@ import { Footer } from '../../components/Footer';
 import { Container, Panel } from '../../styles';
 import serviceImg from '../../assests/images/service.png';
 import { useApi } from '../../services/index';
-import { IClient } from '../../commonTypes';
+import { IService } from '../../commonTypes';
 import { FlatList, IColumns } from '../../components/FlatList';
 import { Dialog } from '../../utils';
 import { HeaderForm } from '../../components';
 
 const Services: React.FC = () => {
-  const [clients, setClients] = useState<IClient[]>();
-  const [backupClients, setBackupClients] = useState<IClient[]>([]);
+  const [services, setServices] = useState<IService[]>();
+  const [servicesList, setServicesList] = useState<Array<any>>();
+  const [backupServices, setBackupServices] = useState<any[]>([]);
   const api = useApi();
   const history = useHistory();
   const [selected, setSelected] = useState<string | undefined>();
+  const [selectesDate, setSelectedDate] = useState(new Date());
 
-  const getClients = useCallback(async () => {
+  console.log(services);
+
+  const getServices = useCallback(async (date?: Date) => {
     try {
-      const { data } = await api.get('/clients');
+      const { data } = await api.get('/services', { params: { date: date?.toLocaleDateString('pt-BR') || selectesDate } });
 
       if (data) {
-        setClients(data);
-        setBackupClients(data);
+        const newDateList = data.map((service: IService) => ({
+          id: service.id,
+          name: service.client.name,
+          specialist: service.specialist.name,
+          scheduleDate: new Date(service.scheduleDate).toLocaleDateString(
+            'pt-BR',
+          ),
+          timeSchedule: new Date(service.scheduleDate).toLocaleTimeString(
+            'pt-BR',
+            { hour: '2-digit', minute: '2-digit' },
+          ),
+        }));
+        setServices(data);
+        setServicesList(newDateList);
+        setBackupServices(newDateList);
       }
     } catch (error) {
-      toast.error('Erro ao obter a lista de pacientes');
+      console.log(error);
+      toast.error('Erro ao obter a lista de atendimentos');
     }
-  }, []);
-
-  useEffect(() => {
-    getClients();
   }, []);
 
   const columns: IColumns[] = [
@@ -48,18 +63,22 @@ const Services: React.FC = () => {
       maxWidth: 200,
     },
     {
-      fieldName: 'cpf',
-      mask: '$$$.$$$.$$$-$$',
-      key: 'cpf',
-      name: 'CPF',
+      fieldName: 'specialist',
+      key: 'specialist',
+      name: 'Especialista',
       maxWidth: 200,
     },
     {
-      fieldName: 'phone',
-      mask: '($$) $.$$$$-$$$$',
-      key: 'phone',
-      name: 'Celular',
-      maxWidth: 120,
+      fieldName: 'scheduleDate',
+      key: 'scheduleDate',
+      name: 'Date de Agendamento',
+      maxWidth: 250,
+    },
+    {
+      fieldName: 'timeSchedule',
+      key: 'timeSchedule',
+      name: 'Hora de Agendamento',
+      maxWidth: 250,
     },
   ];
 
@@ -76,7 +95,7 @@ const Services: React.FC = () => {
         positive: async () => {
           await api.delete(`/clients/${selected}`);
 
-          getClients();
+          getServices();
         },
       });
     } catch (error) {
@@ -89,31 +108,65 @@ const Services: React.FC = () => {
       Dialog.show({
         title: 'Edição de dados',
         subText: 'Tem certeza que deseja editar os dados do paciente ?',
-        positive: () => history.push('/client/registry', { item: clients?.filter((client) => client.id === selected)[0] }),
+        positive: () => history.push('/client/registry', { item: servicesList?.filter((client) => client.id === selected)[0] }),
       });
     }
   }
 
   function handleFilter(text?: string) {
-    setClients(backupClients.filter((client) => {
-      if (client.name.toLowerCase().includes(String(text?.toLowerCase()))) {
-        return true;
-      }
-      return false;
-    }));
+    setServicesList(
+      backupServices.filter((service) => {
+        if (
+          service.name
+            .toLowerCase()
+            .includes(String(text?.toLowerCase()))
+            || service.specialist
+              .toLowerCase()
+              .includes(String(text?.toLowerCase()))
+        ) {
+          return true;
+        }
+        return false;
+      }),
+    );
 
-    if (text === '') setClients(backupClients);
+    if (text === '') setServices(backupServices);
   }
 
   const renderSearch = () => (
     <SearchBox
       styles={{ root: { minWidth: 300, width: 300 } }}
-      placeholder="Filtrar pacientes, ex: cpf, nome"
+      placeholder="Filtrar consultas, ex: Nome,  Especialistas"
       onChange={(_, text) => handleFilter(text)}
     />
   );
 
+  useEffect(() => {
+    getServices();
+  }, []);
+
+  function handleChangeDate(date?: Date | null) {
+    if (date) {
+      getServices(date);
+      setSelectedDate(date);
+    }
+  }
+
+  const renderDate = () => (
+    <DatePicker
+      styles={{ root: { height: 32 } }}
+      value={selectesDate}
+      onSelectDate={handleChangeDate}
+      placeholder="Selecione uma data..."
+      formatDate={(date) => (date ? date.toLocaleDateString('pt-BR') : '')}
+    />
+  );
+
   const commandBarBtn: ICommandBarItemProps[] = [
+    {
+      key: 'date',
+      onRenderIcon: renderDate,
+    },
     {
       key: 'search',
       onRenderIcon: renderSearch,
@@ -150,11 +203,15 @@ const Services: React.FC = () => {
     <Container>
       <Header />
       <Panel>
-        <HeaderForm src={serviceImg} label="Consultas" description="Aqui estão as consultas." />
+        <HeaderForm
+          src={serviceImg}
+          label="Consultas"
+          description="Aqui estão as consultas."
+        />
         <CommandBar items={commandBarBtn} />
         <FlatList
           columns={columns}
-          data={clients}
+          data={servicesList}
           setSelection={(id) => setSelected((prev) => (id === prev ? undefined : id))}
         />
       </Panel>

@@ -95,3 +95,11 @@ export interface IShowDialog {
   positive?: () => void;
   negative?: () => void;
 }
+
+export interface IService{
+  id?: string;
+  scheduleDate: Date;
+  serviceDate?: Date;
+  client: IClient;
+  specialist: ISpecialist;
+}
