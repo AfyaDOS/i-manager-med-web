@@ -37,7 +37,7 @@ const Login: React.FC = () => {
       if (success) {
         toast.success('Login efetuado com sucesso !!', {
           autoClose: 1000,
-          onClose: () => history.push('/services'),
+          onClose: () => history.push('/service'),
         });
       }
     } catch (error) {
@@ -53,11 +53,13 @@ const Login: React.FC = () => {
         <Panel style={{ maxWidth: '30%', marginLeft: 'auto' }}>
           <Form ref={formRef} onSubmit={handleLogin}>
             <Image src={logoImage} width="100%" />
-            <Text variant="xxLargePlus">Bem vindo de volta.</Text>
-            <Text variant="large">
-              Para manter-se conectado, faça login com seus dados de e-mail e
-              senha.
-            </Text>
+            <View>
+              <Text variant="xxLargePlus">Bem vindo de volta.</Text>
+              <Text variant="large">
+                Para manter-se conectado, faça login com seus dados de e-mail e
+                senha.
+              </Text>
+            </View>
             <Stack style={styles.containerBox} tokens={{ childrenGap: 20 }}>
               <Input
                 styles={{ fieldGroup: { height: 40 } }}

@@ -32,8 +32,6 @@ const Clients: React.FC = () => {
     }
   }, []);
 
-  console.log(backupClients);
-
   useEffect(() => {
     getClients();
   }, []);

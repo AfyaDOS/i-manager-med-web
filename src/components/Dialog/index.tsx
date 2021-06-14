@@ -21,7 +21,6 @@ const Dialog = forwardRef<HandleDialog>((_, ref) => {
   const [subText, setSubText] = useState('');
 
   function show(options: IShowDialog) {
-    console.log(options);
     toggle();
     setTitle(options.title);
     setSubText(options.subText);

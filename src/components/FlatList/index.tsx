@@ -100,17 +100,17 @@ const FlatList: React.FC<Props> = ({
                       style={{ width: maxWidth }}
                       tokens={{ padding: 10 }}
                     >
-                      {!isArray ? (
-                        <Text className={mergedStyles.text}>
-                          {mask
-                            ? masked(mask, item[fieldName])
-                            : item[fieldName]}
-                        </Text>
-                      ) : (
+                      {isArray ? (
                         <Text>
                           {item[fieldName]
                             .map((obj: any) => obj[isArray.fieldName])
                             .join(' - ')}
+                        </Text>
+                      ) : (
+                        <Text className={mergedStyles.text}>
+                          {mask
+                            ? masked(mask, item[fieldName])
+                            : item[fieldName]}
                         </Text>
                       )}
                     </Stack.Item>

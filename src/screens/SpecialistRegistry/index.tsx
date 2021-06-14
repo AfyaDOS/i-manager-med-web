@@ -63,7 +63,7 @@ const SpecialistRegistry: React.FC = () => {
       formRef.current?.setFieldValue('address.district', data.bairro);
       formRef.current?.setFieldValue('address.state', data.uf.toUpperCase());
     } catch (error) {
-      console.log(error);
+      toast.error('Ocoreu um erro ao tentar buscar o cep !');
     }
   }
 

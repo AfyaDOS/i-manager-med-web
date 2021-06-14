@@ -98,7 +98,6 @@ const ServiceRegistry: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    console.log(state?.item);
     setData(formRef, state?.item);
   }, [state?.item]);
 
@@ -117,8 +116,6 @@ const ServiceRegistry: React.FC = () => {
         serviceDate: Yup.string(),
         serviceTime: Yup.string(),
       });
-
-      console.log(data);
 
       await schema.validate(data, { abortEarly: false });
 
@@ -142,8 +139,6 @@ const ServiceRegistry: React.FC = () => {
         ),
       };
 
-      console.log(service);
-
       if (state?.item) {
         await api.put(`/services/${state?.item.id}`, { ...service });
       } else {
@@ -162,7 +157,6 @@ const ServiceRegistry: React.FC = () => {
         },
       );
     } catch (error) {
-      console.log(error.response.data);
       setErrors(formRef, error);
       const message = state?.item
         ? 'Ops.. Ocoreu algum erro ao tentar atualizar a consulta'

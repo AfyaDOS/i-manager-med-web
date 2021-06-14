@@ -36,7 +36,7 @@ const UserRegistry: React.FC = () => {
     setData(formRef, state?.item);
   }, [state?.item]);
 
-  const handleSubmit = useCallback(async (data: any) => {
+  const handleSubmit = useCallback(async (data: Record<string, string>) => {
     try {
       const schema = Yup.object().shape({
         name: Yup.string().required('O Nome é obrigatório !!'),

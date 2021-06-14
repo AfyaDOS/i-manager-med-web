@@ -18,8 +18,10 @@ const contentStyles = mergeStyleSets({
   container: {
     display: 'flex',
     flexFlow: 'column nowrap',
-    minHeight: '80%',
+    minHeight: '60%',
+    maxWidth: '10vw',
     minWidth: '80%',
+    padding: 20,
     borderTop: `4px solid ${theme.palette.themePrimary}`,
   },
 });

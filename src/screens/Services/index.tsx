@@ -31,7 +31,6 @@ const Services: React.FC = () => {
       const { data } = await api.get('/services', { params: { date: date?.toLocaleDateString('pt-BR') || selectesDate } });
 
       if (data) {
-        console.log('===========================', data);
         const newDateList = data.map((service: IService) => ({
           id: service.id,
           name: service.client.name,

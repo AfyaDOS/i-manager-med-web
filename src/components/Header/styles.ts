@@ -13,7 +13,6 @@ export const CardHeader = styled.header`
     width: 233px;
     height: 60px;
     object-fit: contain;
-    margin-left: 20px;
   }
 `;
 
