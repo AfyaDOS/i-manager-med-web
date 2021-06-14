@@ -1,9 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import {
-  CommandBar,
-  ICommandBarItemProps,
-  SearchBox,
-} from '@fluentui/react';
+import { CommandBar, ICommandBarItemProps, SearchBox } from '@fluentui/react';
 import { toast } from 'react-toastify';
 import { useHistory } from 'react-router-dom';
 import { Header } from '../../components/Header';
@@ -97,12 +93,17 @@ const Clients: React.FC = () => {
   }
 
   function handleFilter(text?: string) {
-    setClients(backupClients.filter((client) => {
-      if (client.name.toLowerCase().includes(String(text?.toLowerCase()))) {
-        return true;
-      }
-      return false;
-    }));
+    setClients(
+      backupClients.filter((client) => {
+        if (
+          client.name.toLowerCase().includes(String(text?.toLowerCase()))
+          || client.cpf.toLowerCase().includes(String(text?.toLowerCase()))
+        ) {
+          return true;
+        }
+        return false;
+      }),
+    );
 
     if (text === '') setClients(backupClients);
   }
@@ -152,7 +153,11 @@ const Clients: React.FC = () => {
     <Container>
       <Header />
       <Panel>
-        <HeaderForm src={specialistImg} label="Pacientes" description="Aqui estão os registros dos pacientes cadastrados." />
+        <HeaderForm
+          src={specialistImg}
+          label="Pacientes"
+          description="Aqui estão os registros dos pacientes cadastrados."
+        />
         <CommandBar items={commandBarBtn} />
         <FlatList
           columns={columns}

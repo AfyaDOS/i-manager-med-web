@@ -6,7 +6,7 @@ import { FormHandles } from '@unform/core';
 import * as Yup from 'yup';
 import { IDropdownOption, PrimaryButton } from '@fluentui/react';
 import { toast } from 'react-toastify';
-import { useLocation } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import {
   HeaderForm, Input, Select, UnformDatePicker,
 } from '../../components';
@@ -36,7 +36,7 @@ const ServiceRegistry: React.FC = () => {
   const [clients, setClients] = useState<IDropdownOption[]>([]);
   const [specialists, setSpecialists] = useState<IDropdownOption[]>([]);
   const api = useApi();
-  // const history = useHistory();
+  const history = useHistory();
 
   const getBloodTypes = useCallback(async () => {
     try {
@@ -58,7 +58,6 @@ const ServiceRegistry: React.FC = () => {
   const getClients = useCallback(async () => {
     try {
       const { data } = await api.get('/clients');
-      getBloodTypes();
 
       if (data) {
         setClients(
@@ -76,7 +75,6 @@ const ServiceRegistry: React.FC = () => {
   const getSpecialist = useCallback(async () => {
     try {
       const { data } = await api.get('/specialist');
-      getClients();
 
       if (data) {
         setSpecialists(
@@ -94,6 +92,8 @@ const ServiceRegistry: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    getBloodTypes();
+    getClients();
     getSpecialist();
   }, []);
 
@@ -117,7 +117,7 @@ const ServiceRegistry: React.FC = () => {
 
       const service = {
         client: data.client,
-        specialist: data.specilist,
+        specialist: data.specialist,
         scheduleDate: new Date(
           data.scheduleDate.getFullYear(),
           data.scheduleDate.getMonth(),
@@ -127,29 +127,29 @@ const ServiceRegistry: React.FC = () => {
         ),
       };
 
-      console.log(service);
-
       await schema.validate(data, { abortEarly: false });
 
-      // if (state?.item) {
-      //   await api.put(`/clients/${state?.item.id}`, { ...data });
-      // } else {
-      //   await api.post('/clients', { ...data });
-      // }
+      if (state?.item) {
+        await api.put(`/services/${state?.item.id}`, { ...data });
+      } else {
+        await api.post('/services', { ...service });
+      }
 
-      // toast.success(
-      //   `${
-      //     state?.item
-      //       ? 'Paciente atualizado com sucesso !!'
-      //       : 'Paciente adicionado com sucesso !!'
-      //   }`,
-      //   {
-      //     autoClose: 1500,
-      //     onClose: () => history.push('/client'),
-      //   },
-      // );
+      toast.success(
+        `${
+          state?.item
+            ? 'Consulta atualizada com sucesso !!'
+            : 'Consulta adicionada com sucesso !!'
+        }`,
+        {
+          autoClose: 1500,
+          onClose: () => history.push('/service'),
+        },
+      );
     } catch (error) {
+      console.log(error);
       setErrors(formRef, error);
+      toast.error('Ops.. Ocoreu algum erro ao tentar registrar a consulta.');
     }
   }, []);
 

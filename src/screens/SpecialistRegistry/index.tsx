@@ -132,7 +132,7 @@ const SpecialistRegistry: React.FC = () => {
     <Container>
       <Header />
       <Panel>
-        <Form ref={formRef} onSubmit={handleSubmit} style={{ height: 'calc(100vh - 100px)' }}>
+        <Form ref={formRef} onSubmit={handleSubmit}>
           <HeaderForm src={specialist} label={state?.item ? 'Atualização de Especialista' : 'Cadastro de Especialista'} description="Para cadastrar um Especialista preencha os campos abaixo." />
           <Row>
             <Column style={{ justifyContent: 'flex-start' }}>
