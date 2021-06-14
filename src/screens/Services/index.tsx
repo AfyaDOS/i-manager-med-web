@@ -28,7 +28,7 @@ const Services: React.FC = () => {
 
   const getServices = useCallback(async (date?: Date) => {
     try {
-      const { data } = await api.get('/services', { params: { date: date?.toLocaleDateString('pt-BR') || selectesDate } });
+      const { data } = await api.get('/services', { params: { date: date?.toLocaleDateString('pt-BR') || selectesDate.toLocaleDateString('pt-BR') } });
 
       if (data) {
         const newDateList = data.map((service: IService) => ({

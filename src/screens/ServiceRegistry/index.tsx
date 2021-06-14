@@ -115,6 +115,7 @@ const ServiceRegistry: React.FC = () => {
         ),
         serviceDate: Yup.string(),
         serviceTime: Yup.string(),
+        price: Yup.string().required('O preço da consulta é obrigatório !!'),
       });
 
       await schema.validate(data, { abortEarly: false });
@@ -137,6 +138,7 @@ const ServiceRegistry: React.FC = () => {
           data.serviceDate?.split(':')[0],
           data.serviceDate?.split(':')[1],
         ),
+        price: data.price,
       };
 
       if (state?.item) {
@@ -211,6 +213,13 @@ const ServiceRegistry: React.FC = () => {
               />
             </Column>
             <Column>
+              <Input
+                currency
+                numeric
+                disabled={!!state?.item}
+                name="price"
+                label="Preço do atendimento"
+              />
               {state?.item && (
                 <>
                   <UnformDatePicker

@@ -1,15 +1,27 @@
+/* eslint-disable no-nested-ternary */
 import { ITextFieldProps, TextField } from '@fluentui/react';
 import { useField } from '@unform/core';
 import React, { useEffect, useRef, useState } from 'react';
+import { currencyFormt } from '../../utils';
 
-interface Props extends Omit<ITextFieldProps, 'onFocus' | 'onChange' | 'defaultValue' | 'errorMessage' | 'value'> {
+interface Props
+  extends Omit<
+    ITextFieldProps,
+    'onFocus' | 'onChange' | 'defaultValue' | 'errorMessage' | 'value'
+  > {
   name: string;
   mask?: string;
   numeric?: boolean;
+  currency?: boolean;
 }
 
 const Input: React.FC<Props> = ({
-  name, label, mask, numeric, ...rest
+  name,
+  label,
+  mask,
+  numeric,
+  currency,
+  ...rest
 }) => {
   const {
     fieldName, defaultValue, registerField, error, clearError,
@@ -39,6 +51,8 @@ const Input: React.FC<Props> = ({
       setInputValue(valueMasked);
     } else if (text === '') {
       setInputValue(undefined);
+    } else if (currency && text) {
+      setInputValue(currencyFormt(text));
     } else {
       setInputValue(text);
     }
@@ -48,7 +62,13 @@ const Input: React.FC<Props> = ({
     registerField({
       name: fieldName,
       ref: inputRef,
-      getValue: (ref) => (numeric ? ref.current?.replace(/\D/g, '') : ref.current),
+      getValue: (ref) => (numeric
+        ? currency
+          ? ref.current
+            ?.replace(/\D/g, '')
+            .substring(0, ref.current?.replace(/\D/g, '').length - 2)
+          : ref.current?.replace(/\D/g, '')
+        : ref.current),
       setValue: (ref, text: string | undefined) => {
         handleChange(text);
       },

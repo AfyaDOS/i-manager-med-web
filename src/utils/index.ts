@@ -235,3 +235,23 @@ export const DayPickerStrings: IDatePickerStrings = {
   monthPickerHeaderAriaLabel: '{0}, select to change the year',
   yearPickerHeaderAriaLabel: '{0}, select to change the month',
 };
+
+export function currencyFormt(value: string): string {
+  let newValue = value.replace(/R/g, '');
+
+  const array = newValue.split(',');
+
+  if (array[1]?.length <= 1) {
+    newValue = array[0].slice(0, array[0].length - 1);
+  }
+
+  newValue = newValue.replace(/\$/g, '');
+  newValue = newValue.replace(/,.*?[0-9]{1,2}/g, '');
+  newValue = newValue.replace(/ /g, '');
+  newValue = newValue.replace(/\./g, '');
+
+  return Intl.NumberFormat('pt-BR', {
+    currency: 'BRL',
+    style: 'currency',
+  }).format(Number(newValue));
+}
