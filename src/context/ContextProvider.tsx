@@ -21,6 +21,9 @@ const ContextProvider: React.FC = ({ children }) => {
         setToken(data.token);
         setUser({ name: data.name, id: data.id });
         setIsAuthenticated(true);
+        localStorage.setItem('token', JSON.stringify(data.token));
+        localStorage.setItem('user', JSON.stringify(user));
+        localStorage.setItem('isAuthenticated', JSON.stringify(isAuthenticated));
       }
 
       return true;
